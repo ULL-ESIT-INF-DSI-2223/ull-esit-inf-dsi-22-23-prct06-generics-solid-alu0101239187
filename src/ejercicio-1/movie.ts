@@ -1,4 +1,14 @@
 export class Movie {
+  /**
+   * Constructor of the class Movie
+   * @param _name Name of the movie
+   * @param _director Director of the movie
+   * @param _duration Duration of the movie in minutes, must be a positive integer
+   * @param _year Year of the movie, must be a positive integer
+   * ```typescript
+   * movie: Movie = new Movie("Avatar", "James Cameron", 137, 2009);
+   * ```
+   */
   constructor(private _name: string, private _director: string, private _duration: number, private _year: number) {
     if (_duration % 1 !== 0 || _duration < 0) {
       throw "La duración en minutos debe ser un entero positivo.";

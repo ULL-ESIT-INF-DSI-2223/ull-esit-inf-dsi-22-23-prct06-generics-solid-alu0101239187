@@ -34,9 +34,9 @@ describe("StringSearchableCollection class tests", () => {
     it("Function removeItem", () => {
         expect(string_searchable_collection.removeItem(0)).to.be.equal("hola");
         expect(string_searchable_collection.removeItem(3)).to.be.equal("abierto");
-        expect(string_searchable_collection.getItem(3)).to.be.undefined;
-        expect(string_searchable_collection.getItem(-1)).to.be.undefined;
-        expect(string_searchable_collection.getItem(2.5)).to.be.undefined;
+        expect(string_searchable_collection.removeItem(3)).to.be.undefined;
+        expect(string_searchable_collection.removeItem(-1)).to.be.undefined;
+        expect(string_searchable_collection.removeItem(2.5)).to.be.undefined;
     });
 
     it("Function getNumberOfItems", () => {

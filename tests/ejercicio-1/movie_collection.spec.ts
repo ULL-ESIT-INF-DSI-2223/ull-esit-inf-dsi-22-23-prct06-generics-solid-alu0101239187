@@ -5,11 +5,13 @@ import { BasicStreamableCollection } from "../../src/ejercicio-1/basic_streamabl
 import { Movie } from "../../src/ejercicio-1/movie";
 
 describe("MovieCollection class tests", () => {
-    const movie_collection: MovieCollection = new MovieCollection([]);
+    const movie_collection: MovieCollection = new MovieCollection();
 
     it("MovieCollection constructor", () => {
         expect(movie_collection).to.be.instanceof(MovieCollection);
         expect(movie_collection).to.be.instanceof(BasicStreamableCollection);
+        expect(new MovieCollection(new Movie("Avatar", "James Cameron", 137, 2009))).to.be.instanceof(MovieCollection);
+        expect(new MovieCollection(new Movie("Avatar", "James Cameron", 137, 2009), new Movie("Titanic", "James Cameron", 118, 1997))).to.be.instanceof(MovieCollection);
         expect(movie_collection).to.respondTo('add');
         expect(movie_collection).to.respondTo('searchByName');
         expect(movie_collection).to.respondTo('searchByYear');
@@ -23,6 +25,31 @@ describe("MovieCollection class tests", () => {
         expect(movie_collection.add(new Movie("Titanic", "James Cameron", 118, 1997))).to.be.true;
         expect(movie_collection.collection).to.be.eql([new Movie("Avatar", "James Cameron", 137, 2009), new Movie("Titanic", "James Cameron", 118, 1997)]);
         expect(movie_collection.add(new Movie("Avatar", "James Cameron", 137, 2009))).to.be.false;
+    });
+
+    it("Function get", () => {
+        expect(movie_collection.get(0)).to.be.eql(new Movie("Avatar", "James Cameron", 137, 2009));
+        expect(movie_collection.get(1)).to.be.eql(new Movie("Titanic", "James Cameron", 118, 1997));
+        expect(movie_collection.get(5)).to.be.undefined;
+        expect(movie_collection.get(-1)).to.be.undefined;
+        expect(movie_collection.get(2.5)).to.be.undefined;
+    });
+
+    it("Function remove", () => {
+        expect(movie_collection.remove(1)).to.be.eql(new Movie("Titanic", "James Cameron", 118, 1997));
+        expect(movie_collection.collection).to.be.eql([new Movie("Avatar", "James Cameron", 137, 2009)]);
+        expect(movie_collection.remove(0)).to.be.eql(new Movie("Avatar", "James Cameron", 137, 2009));
+        expect(movie_collection.collection).to.be.eql([]);
+        expect(movie_collection.remove(3)).to.be.undefined;
+        expect(movie_collection.remove(-1)).to.be.undefined;
+        expect(movie_collection.remove(2.5)).to.be.undefined;
+    });
+
+    it("Function getNumberOfItems", () => {
+        expect(movie_collection.getNumberOfItems()).to.be.equal(0);
+        expect(movie_collection.add(new Movie("Avatar", "James Cameron", 137, 2009))).to.be.true;
+        expect(movie_collection.add(new Movie("Titanic", "James Cameron", 118, 1997))).to.be.true;
+        expect(movie_collection.getNumberOfItems()).to.be.equal(2);
     });
 
     it("Function searchByName", () => {

@@ -1,4 +1,14 @@
 export class Serie {
+  /**
+   * Constructor of the class Serie
+   * @param _name Name of the serie
+   * @param _seasons Number of seasons of the serie, must be an integer greater than zero
+   * @param _chapters Numbre of chapters of the serie, must be an integer greater than zero
+   * @param _year Year of the serie, must be a positive integer
+   * ```typescript
+   * serie: Serie = new Serie("The Last of Us", 1, 9, 2023);
+   * ```
+   */
   constructor(private _name: string, private _seasons: number, private _chapters: number, private _year: number) {
     if (_seasons % 1 !== 0 || _seasons < 1) {
       throw "El número de temporadas debe ser entero y mayor que cero.";

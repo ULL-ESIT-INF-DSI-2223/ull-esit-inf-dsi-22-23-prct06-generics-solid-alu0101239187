@@ -34,9 +34,9 @@ describe("NumericSearchableCollection class tests", () => {
     it("Function removeItem", () => {
         expect(numeric_searchable_collection.removeItem(0)).to.be.equal(1);
         expect(numeric_searchable_collection.removeItem(3)).to.be.equal(3);
-        expect(numeric_searchable_collection.getItem(3)).to.be.undefined;
-        expect(numeric_searchable_collection.getItem(-1)).to.be.undefined;
-        expect(numeric_searchable_collection.getItem(2.5)).to.be.undefined;
+        expect(numeric_searchable_collection.removeItem(3)).to.be.undefined;
+        expect(numeric_searchable_collection.removeItem(-1)).to.be.undefined;
+        expect(numeric_searchable_collection.removeItem(2.5)).to.be.undefined;
     });
 
     it("Function getNumberOfItems", () => {
