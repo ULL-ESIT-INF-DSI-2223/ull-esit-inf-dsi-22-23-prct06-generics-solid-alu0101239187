@@ -9,7 +9,12 @@ export class Movie {
    * movie: Movie = new Movie("Avatar", "James Cameron", 137, 2009);
    * ```
    */
-  constructor(private _name: string, private _director: string, private _duration: number, private _year: number) {
+  constructor(
+    private _name: string,
+    private _director: string,
+    private _duration: number,
+    private _year: number
+  ) {
     if (_duration % 1 !== 0 || _duration < 0) {
       throw "La duración en minutos debe ser un entero positivo.";
     }

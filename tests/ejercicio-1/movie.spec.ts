@@ -9,10 +9,18 @@ describe("Movie class tests", () => {
   it("Movie constructor", () => {
     expect(movie1).to.be.instanceof(Movie);
     expect(movie2).to.be.instanceof(Movie);
-    expect(() => new Movie("Avatar", "James Cameron", -137, 2009)).to.throw("La duración en minutos debe ser un entero positivo.");
-    expect(() => new Movie("Avatar", "James Cameron", 137.5, 2009)).to.throw("La duración en minutos debe ser un entero positivo.");
-    expect(() => new Movie("Avatar", "James Cameron", 137, -2009)).to.throw("El año debe ser un entero positivo.");
-    expect(() => new Movie("Avatar", "James Cameron", 137, 2009.5)).to.throw("El año debe ser un entero positivo.");
+    expect(() => new Movie("Avatar", "James Cameron", -137, 2009)).to.throw(
+      "La duración en minutos debe ser un entero positivo."
+    );
+    expect(() => new Movie("Avatar", "James Cameron", 137.5, 2009)).to.throw(
+      "La duración en minutos debe ser un entero positivo."
+    );
+    expect(() => new Movie("Avatar", "James Cameron", 137, -2009)).to.throw(
+      "El año debe ser un entero positivo."
+    );
+    expect(() => new Movie("Avatar", "James Cameron", 137, 2009.5)).to.throw(
+      "El año debe ser un entero positivo."
+    );
   });
 
   it("Property name", () => {
@@ -34,8 +42,12 @@ describe("Movie class tests", () => {
     expect(movie2.duration).to.be.equal(118);
     movie1.duration = 151;
     expect(movie1.duration).to.be.equal(151);
-    expect(() => (movie2.duration = -118)).to.throw("La duración en minutos debe ser un entero positivo.");
-    expect(() => (movie2.duration = 118.5)).to.throw("La duración en minutos debe ser un entero positivo.");
+    expect(() => (movie2.duration = -118)).to.throw(
+      "La duración en minutos debe ser un entero positivo."
+    );
+    expect(() => (movie2.duration = 118.5)).to.throw(
+      "La duración en minutos debe ser un entero positivo."
+    );
   });
 
   it("Property year", () => {
@@ -43,7 +55,11 @@ describe("Movie class tests", () => {
     expect(movie2.year).to.be.equal(1997);
     movie1.year = 1984;
     expect(movie1.year).to.be.equal(1984);
-    expect(() => (movie2.year = -1997)).to.throw("El año debe ser un entero positivo.");
-    expect(() => (movie2.year = 1997.5)).to.throw("El año debe ser un entero positivo.");
+    expect(() => (movie2.year = -1997)).to.throw(
+      "El año debe ser un entero positivo."
+    );
+    expect(() => (movie2.year = 1997.5)).to.throw(
+      "El año debe ser un entero positivo."
+    );
   });
 });

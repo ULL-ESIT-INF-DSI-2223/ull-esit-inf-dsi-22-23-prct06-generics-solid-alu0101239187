@@ -9,7 +9,12 @@ export class Serie {
    * serie: Serie = new Serie("The Last of Us", 1, 9, 2023);
    * ```
    */
-  constructor(private _name: string, private _seasons: number, private _chapters: number, private _year: number) {
+  constructor(
+    private _name: string,
+    private _seasons: number,
+    private _chapters: number,
+    private _year: number
+  ) {
     if (_seasons % 1 !== 0 || _seasons < 1) {
       throw "El número de temporadas debe ser entero y mayor que cero.";
     }
