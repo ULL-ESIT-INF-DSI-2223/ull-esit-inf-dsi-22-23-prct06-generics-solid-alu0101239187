@@ -901,10 +901,6 @@ export class Serie {
 Las pruebas para probar la clase son las siguientes:
 
 ```typescript
-import "mocha";
-import { expect } from "chai";
-import { Serie } from "../../src/ejercicio-1/serie";
-
 describe("Serie class tests", () => {
   const serie1: Serie = new Serie("The Last of Us", 1, 9, 2023);
   const serie2: Serie = new Serie("Friends", 10, 236, 1994);
@@ -976,6 +972,501 @@ describe("Serie class tests", () => {
     expect(() => (serie2.year = 1994.5)).to.throw(
       "El año debe ser un entero positivo."
     );
+  });
+});
+```
+
+### 2. Implementación de una lista y sus operaciones
+
+Este ejercicio trata de diseñar una clase que implemente las operaciones de la clase `Array.prototype` sin utilizar los métodos que esta incluye.
+
+Para esto, se ha creado una clase genérica `MyList` que funciona con cualquier tipo de elemento y contiene un array de elementos. Los métodos que incluye son:
+ * `append` añade los elementos de otra lista a la lista.
+ * `concatenate` añade los elementos de una o varias listas a la lista.
+ * `filter` devuelve una lista con los elementos que cumplen con la función que se le pasa como parámetro.
+ * `length` devuelve el número de elementos de la lista. En este caso se utiliza el atributo `length` del array original, ya que no hay otra forma fiable de encontrar la longitud de una colección de elementos. Por ejemplo, podría recorrer el array hasta encontrar *undefined*, pero dependiendo de la configuración del compilador la lista podría tener un valor *undefined* en su interior, dando una longitud incorrecta.
+ * `map` devuelve una lista con el resultado de aplicar la función que se le pasa como parámetro a cada elemento de la lista.
+ * `reduce` devuelve el resultado final acumulado de aplicar la función que se le pasa como parámetro a cada elemento de la lista.
+ * `reverse` devuelve la lista en orden inverso.
+ * `forEach` aplica la función que se le pasa como parámetro a cada elemento de la lista.
+
+```typescript
+export class MyList<T> {
+  private _elements: T[];
+
+  constructor(...elements: T[]) {
+    this._elements = elements;
+  }
+
+  get elements() {
+    return this._elements;
+  }
+
+  public append(list: MyList<T>): void {
+    const new_elements: T[] = new Array<T>(this.length() + list.length());
+    for (let index = 0; index < this.length(); index++) {
+      new_elements[index] = this._elements[index];
+    }
+    for (let index = 0; index < list.length(); index++) {
+      new_elements[this.length() + index] = list.elements[index];
+    }
+    this._elements = new_elements;
+  }
+
+  public concatenate(list: MyList<T>, ...other_lists: MyList<T>[]): void {
+    let total_length = list.length();
+    for (let index = 0; index < other_lists.length; index++) {
+      total_length += other_lists[index].length();
+    }
+    const new_elements: T[] = new Array<T>(this.length() + total_length);
+    for (let index = 0; index < this.length(); index++) {
+      new_elements[index] = this._elements[index];
+    }
+    for (let index = 0; index < list.length(); index++) {
+      new_elements[this.length() + index] = list.elements[index];
+    }
+    let counter = list.length();
+    for (let i = 0; i < other_lists.length; i++) {
+      for (let j = 0; j < other_lists[i].length(); j++) {
+        new_elements[this.length() + counter++] = other_lists[i].elements[j];
+      }
+    }
+    this._elements = new_elements;
+  }
+
+  public filter(my_function: (a: T) => boolean): MyList<T> {
+    const output: MyList<T> = new MyList();
+    for (let index = 0; index < this.length(); index++) {
+      const current_element: T = this._elements[index];
+      if (my_function(current_element)) {
+        output.append(new MyList(current_element));
+      }
+    }
+    return output;
+  }
+
+  public length(): number {
+    return this._elements.length;
+  }
+
+  public map(my_function: (a: T) => T): MyList<T> {
+    const output: MyList<T> = new MyList();
+    for (let index = 0; index < this.length(); index++) {
+      const current_element: T = this._elements[index];
+      output.append(new MyList<T>(my_function(current_element)));
+    }
+    return output;
+  }
+
+  public reduce(my_function: (a: T, b: T) => T, initial_value: T): T {
+    let output: T = initial_value;
+    if (this.length() === 0) {
+      return output;
+    }
+    for (let index = 0; index < this.length(); index++) {
+      output = my_function(output, this._elements[index]);
+    }
+    return output;
+  }
+
+  public reverse(): MyList<T> {
+    const output: MyList<T> = new MyList();
+    for (let index = this.length() - 1; index >= 0; index--) {
+      const current_element: T = this._elements[index];
+      output.append(new MyList<T>(current_element));
+    }
+    return output;
+  }
+
+  public forEach(my_function: (a: T) => T): void {
+    const new_elements: T[] = new Array<T>(this.length());
+    for (let index = 0; index < this.length(); index++) {
+      new_elements[index] = my_function(this._elements[index]);
+    }
+    this._elements = new_elements;
+  }
+}
+```
+
+Las pruebas para probar la clase son las siguientes:
+
+```typescript
+describe("MyList class tests", () => {
+  it("MyList constructor", () => {
+    expect(new MyList()).to.be.instanceof(MyList);
+    expect(new MyList()).to.be.instanceof(MyList);
+    expect(new MyList(1, 2, 3)).to.be.instanceof(MyList);
+    expect(new MyList("hola", "adios", "si", "no")).to.be.instanceof(MyList);
+  });
+
+  it("Property elements", () => {
+    expect(new MyList().elements).to.be.eql([]);
+    expect(new MyList(1, 2, 3).elements).to.be.eql([1, 2, 3]);
+    expect(new MyList("hola", "adios", "si", "no").elements).to.be.eql([
+      "hola",
+      "adios",
+      "si",
+      "no",
+    ]);
+  });
+
+  it("Function append string", () => {
+    const my_list: MyList<string> = new MyList("hola", "adios", "si", "no");
+
+    expect(my_list.elements).to.be.eql(["hola", "adios", "si", "no"]);
+    my_list.append(new MyList("puede"));
+    expect(my_list.elements).to.be.eql(["hola", "adios", "si", "no", "puede"]);
+    my_list.append(new MyList("SI", "NO"));
+    expect(my_list.elements).to.be.eql([
+      "hola",
+      "adios",
+      "si",
+      "no",
+      "puede",
+      "SI",
+      "NO",
+    ]);
+  });
+
+  it("Function append number", () => {
+    const my_list: MyList<number> = new MyList(1, 2, 3, 4);
+
+    expect(my_list.elements).to.be.eql([1, 2, 3, 4]);
+    my_list.append(new MyList(5));
+    expect(my_list.elements).to.be.eql([1, 2, 3, 4, 5]);
+    my_list.append(new MyList(6, 7));
+    expect(my_list.elements).to.be.eql([1, 2, 3, 4, 5, 6, 7]);
+  });
+
+  it("Function append boolean", () => {
+    const my_list: MyList<boolean> = new MyList(true, false);
+
+    expect(my_list.elements).to.be.eql([true, false]);
+    my_list.append(new MyList(true));
+    expect(my_list.elements).to.be.eql([true, false, true]);
+    my_list.append(new MyList(true, false));
+    expect(my_list.elements).to.be.eql([true, false, true, true, false]);
+  });
+
+  it("Function concatenate string", () => {
+    const my_list: MyList<string> = new MyList("hola", "adios", "si", "no");
+
+    expect(my_list.elements).to.be.eql(["hola", "adios", "si", "no"]);
+    my_list.concatenate(new MyList("puede"));
+    expect(my_list.elements).to.be.eql(["hola", "adios", "si", "no", "puede"]);
+    my_list.concatenate(new MyList("SI", "NO"), new MyList("No otra vez"));
+    expect(my_list.elements).to.be.eql([
+      "hola",
+      "adios",
+      "si",
+      "no",
+      "puede",
+      "SI",
+      "NO",
+      "No otra vez",
+    ]);
+  });
+
+  it("Function concatenate number", () => {
+    const my_list: MyList<number> = new MyList(1, 2, 3, 4);
+
+    expect(my_list.elements).to.be.eql([1, 2, 3, 4]);
+    my_list.concatenate(new MyList(5));
+    expect(my_list.elements).to.be.eql([1, 2, 3, 4, 5]);
+    my_list.concatenate(new MyList(6, 7), new MyList(1, 2, 3, 4));
+    expect(my_list.elements).to.be.eql([1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4]);
+  });
+
+  it("Function concatenate boolean", () => {
+    const my_list: MyList<boolean> = new MyList(true, false);
+
+    expect(my_list.elements).to.be.eql([true, false]);
+    my_list.concatenate(new MyList(false));
+    expect(my_list.elements).to.be.eql([true, false, false]);
+    my_list.concatenate(new MyList(false, true), new MyList(true));
+    expect(my_list.elements).to.be.eql([true, false, false, false, true, true]);
+  });
+
+  it("Function filter string", () => {
+    const my_list: MyList<string> = new MyList(
+      "hola",
+      "adios",
+      "si",
+      "no",
+      "si",
+      "nose",
+      "napolitana"
+    );
+
+    expect(my_list.filter((a) => a === "si")).to.be.eql(new MyList("si", "si"));
+    expect(my_list.filter((a) => a.startsWith("n"))).to.be.eql(
+      new MyList("no", "nose", "napolitana")
+    );
+    expect(my_list.filter((a) => a === "queso")).to.be.eql(new MyList());
+  });
+
+  it("Function filter number", () => {
+    const my_list: MyList<number> = new MyList(1, 2, 3, 2, 2.5, 4.1, 8, 6);
+
+    expect(my_list.filter((a) => a === 2)).to.be.eql(new MyList(2, 2));
+    expect(my_list.filter((a) => a % 2 === 0)).to.be.eql(
+      new MyList(2, 2, 8, 6)
+    );
+    expect(my_list.filter((a) => a === 0)).to.be.eql(new MyList());
+  });
+
+  it("Function filter boolean", () => {
+    const my_list: MyList<boolean> = new MyList(true, true, false, true, false);
+
+    expect(my_list.filter((a) => a === true)).to.be.eql(
+      new MyList(true, true, true)
+    );
+    expect(my_list.filter((a) => a === false)).to.be.eql(
+      new MyList(false, false)
+    );
+  });
+
+  it("Function length string", () => {
+    const my_list: MyList<string> = new MyList("hola", "adios", "si", "no");
+
+    expect(my_list.length()).to.be.equal(4);
+    my_list.append(new MyList("puede"));
+    expect(my_list.length()).to.be.equal(5);
+    my_list.append(new MyList("SI", "NO"));
+    expect(my_list.length()).to.be.equal(7);
+  });
+
+  it("Function length number", () => {
+    const my_list: MyList<number> = new MyList(1, 2, 3, 4);
+
+    expect(my_list.length()).to.be.equal(4);
+    my_list.append(new MyList(5));
+    expect(my_list.length()).to.be.equal(5);
+    my_list.append(new MyList(6, 7));
+    expect(my_list.length()).to.be.equal(7);
+  });
+
+  it("Function length boolean", () => {
+    const my_list: MyList<boolean> = new MyList(true, false);
+
+    expect(my_list.length()).to.be.equal(2);
+    my_list.append(new MyList(false, true));
+    expect(my_list.length()).to.be.equal(4);
+    my_list.append(new MyList(true, true, true));
+    expect(my_list.length()).to.be.equal(7);
+  });
+
+  it("Function map string", () => {
+    const my_list: MyList<string> = new MyList("hola", "adios", "si", "no");
+
+    expect(
+      my_list.map(function (a) {
+        return a + "si";
+      })
+    ).to.be.eql(new MyList("holasi", "adiossi", "sisi", "nosi"));
+    expect(
+      my_list.map(function (a) {
+        return a.toUpperCase();
+      })
+    ).to.be.eql(new MyList("HOLA", "ADIOS", "SI", "NO"));
+    expect(
+      my_list.map(function () {
+        return "a";
+      })
+    ).to.be.eql(new MyList("a", "a", "a", "a"));
+  });
+
+  it("Function map number", () => {
+    const my_list: MyList<number> = new MyList(1, 2, 3, 4);
+
+    expect(
+      my_list.map(function (a) {
+        return a + 2;
+      })
+    ).to.be.eql(new MyList(3, 4, 5, 6));
+    expect(
+      my_list.map(function (a) {
+        return a * a;
+      })
+    ).to.be.eql(new MyList(1, 4, 9, 16));
+    expect(
+      my_list.map(function () {
+        return 0;
+      })
+    ).to.be.eql(new MyList(0, 0, 0, 0));
+  });
+
+  it("Function map boolean", () => {
+    const my_list: MyList<boolean> = new MyList(true, false, true, false);
+
+    expect(
+      my_list.map(function (a) {
+        return !a;
+      })
+    ).to.be.eql(new MyList(false, true, false, true));
+    expect(
+      my_list.map(function () {
+        return true;
+      })
+    ).to.be.eql(new MyList(true, true, true, true));
+  });
+
+  it("Function reduce string", () => {
+    const my_list: MyList<string> = new MyList("hola", "adios", "si", "no");
+
+    expect(
+      my_list.reduce(function (a, b) {
+        return a.concat(b);
+      }, "")
+    ).to.be.equal("holaadiossino");
+    expect(
+      my_list.reduce(function (a, b) {
+        return a.concat(b[0]);
+      }, "")
+    ).to.be.equal("hasn");
+    expect(
+      my_list.reduce(function (a, b) {
+        return a.concat(b);
+      }, "tarta")
+    ).to.be.equal("tartaholaadiossino");
+    expect(
+      new MyList<string>().reduce(function (a, b) {
+        return a.concat(b);
+      }, "tarta")
+    ).to.be.equal("tarta");
+  });
+
+  it("Function reduce number", () => {
+    const my_list: MyList<number> = new MyList(1, 2, 3, 4);
+
+    expect(
+      my_list.reduce(function (a, b) {
+        return a + b;
+      }, 0)
+    ).to.be.equal(10);
+    expect(
+      my_list.reduce(function (a, b) {
+        return a * b;
+      }, 1)
+    ).to.be.equal(24);
+    expect(
+      my_list.reduce(function (a, b) {
+        return a - b;
+      }, 10)
+    ).to.be.equal(0);
+    expect(
+      new MyList<number>().reduce(function (a, b) {
+        return a - b;
+      }, 10)
+    ).to.be.equal(10);
+  });
+
+  it("Function reduce boolean", () => {
+    const my_list: MyList<boolean> = new MyList(true, false, true, false);
+
+    expect(
+      my_list.reduce(function (a, b) {
+        return a || b;
+      }, true)
+    ).to.be.equal(true);
+    expect(
+      my_list.reduce(function (a, b) {
+        return a && b;
+      }, false)
+    ).to.be.equal(false);
+    expect(
+      new MyList<boolean>().reduce(function (a, b) {
+        return a && b;
+      }, true)
+    ).to.be.equal(true);
+  });
+
+  it("Function reverse string", () => {
+    const my_list: MyList<string> = new MyList("hola", "adios", "si", "no");
+
+    expect(my_list.reverse()).to.be.eql(
+      new MyList("no", "si", "adios", "hola")
+    );
+    expect(
+      my_list
+        .map(function (a) {
+          return a.toUpperCase();
+        })
+        .reverse()
+    ).to.be.eql(new MyList("NO", "SI", "ADIOS", "HOLA"));
+  });
+
+  it("Function reverse number", () => {
+    const my_list: MyList<number> = new MyList(1, 2, 3, 4);
+
+    expect(my_list.reverse()).to.be.eql(new MyList(4, 3, 2, 1));
+    expect(
+      my_list
+        .map(function (a) {
+          return a * a;
+        })
+        .reverse()
+    ).to.be.eql(new MyList(16, 9, 4, 1));
+  });
+
+  it("Function reverse boolean", () => {
+    const my_list: MyList<boolean> = new MyList(true, false, true, false);
+
+    expect(my_list.reverse()).to.be.eql(new MyList(false, true, false, true));
+    expect(
+      my_list
+        .map(function (a) {
+          return !a;
+        })
+        .reverse()
+    ).to.be.eql(new MyList(true, false, true, false));
+  });
+
+  it("Function forEach string", () => {
+    const my_list: MyList<string> = new MyList("hola", "adios", "si", "no");
+
+    my_list.forEach(function (a) {
+      return a + "si";
+    });
+    expect(my_list).to.be.eql(new MyList("holasi", "adiossi", "sisi", "nosi"));
+    my_list.forEach(function (a) {
+      return a.toUpperCase();
+    });
+    expect(my_list).to.be.eql(new MyList("HOLASI", "ADIOSSI", "SISI", "NOSI"));
+    my_list.forEach(function () {
+      return "a";
+    });
+    expect(my_list).to.be.eql(new MyList("a", "a", "a", "a"));
+  });
+
+  it("Function forEach number", () => {
+    const my_list: MyList<number> = new MyList(1, 2, 3, 4);
+
+    my_list.forEach(function (a) {
+      return a + 2;
+    });
+    expect(my_list).to.be.eql(new MyList(3, 4, 5, 6));
+    my_list.forEach(function (a) {
+      return a * a;
+    });
+    expect(my_list).to.be.eql(new MyList(9, 16, 25, 36));
+    my_list.forEach(function () {
+      return 0;
+    });
+    expect(my_list).to.be.eql(new MyList(0, 0, 0, 0));
+  });
+
+  it("Function forEach boolean", () => {
+    const my_list: MyList<boolean> = new MyList(true, false, true, false);
+
+    my_list.forEach(function (a) {
+      return !a;
+    });
+    expect(my_list).to.be.eql(new MyList(false, true, false, true));
+    my_list.forEach(function () {
+      return true;
+    });
+    expect(my_list).to.be.eql(new MyList(true, true, true, true));
   });
 });
 ```
