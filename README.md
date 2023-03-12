@@ -9,6 +9,7 @@
 - [Introducción](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct05-objects-classes-interfaces-alu0101239187/#introducción)
 - [Ejercicios](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct05-objects-classes-interfaces-alu0101239187/#ejercicios)
 - [Ejercicios PE 103](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct05-objects-classes-interfaces-alu0101239187/#ejercicios-pe-103)
+- [Conclusión](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct05-objects-classes-interfaces-alu0101239187/#conclusión)
 
 ## Introducción
 
@@ -3372,3 +3373,7 @@ describe("StringSearchableCollection class tests", () => {
   });
 });
 ```
+
+## Conclusión
+
+Con los tres ejercicios que han sido realizados, hemos logrado aprender acerca de la creación de clases e interfaces genéricas en TypeScript y profundizar en la aplicación de los principios SOLID, lo que mejora nuestro código notoriamente.
