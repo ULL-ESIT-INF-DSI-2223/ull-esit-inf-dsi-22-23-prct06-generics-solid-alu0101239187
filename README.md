@@ -8,6 +8,7 @@
 
 - [Introducción](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct05-objects-classes-interfaces-alu0101239187/#introducción)
 - [Ejercicios](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct05-objects-classes-interfaces-alu0101239187/#ejercicios)
+- [Ejercicios PE 103](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct05-objects-classes-interfaces-alu0101239187/#ejercicios-pe-103)
 
 ## Introducción
 
@@ -23,7 +24,7 @@ En este repositorio se encuentra descrita la realización de una serie de ejerci
 
 Este ejercicio trata de diseñar el modelado de datos para una plataforma de vídeos en streaming. Para esto tenemos que crear una estructura de clases e interfaces que nos permita guardar y relacionar la información de esta.
 
-#### Interfazgenérica  SearchableByName
+#### Interfaz genérica  SearchableByName
 
 La interfaz genérica `SearchableByName` se utiliza para indicar que un objeto implementa una operación para buscar elementos de tipo T por su nombre.
 
@@ -158,7 +159,7 @@ A continuación se describirán los métodos implementados en la clase:
 
 #### Clase MovieCollection
 
-La clase `MovieCollection` hereda de la clase abstracta genérica `BasicStreamableCollection` y la implementa con el tipo `Movie`, representando una colección de películas. Esta implementa el método`print` de la clase abstracta especializado en películas.
+La clase `MovieCollection` hereda de la clase abstracta genérica `BasicStreamableCollection` y la implementa con el tipo `Movie`, representando una colección de películas. Esta implementa el método `print` de la clase abstracta especializado en películas.
 
 ```typescript
 export class MovieCollection extends BasicStreamableCollection<Movie> {
@@ -418,7 +419,7 @@ describe("Movie class tests", () => {
 
 #### Clase DocumentaryCollection
 
-La clase `DocumentaryCollection` hereda de la clase abstracta genérica `BasicStreamableCollection` y la implementa con el tipo `Documentary`, representando una colección de documentales. Esta implementa el método`print` de la clase abstracta especializado en documentales.
+La clase `DocumentaryCollection` hereda de la clase abstracta genérica `BasicStreamableCollection` y la implementa con el tipo `Documentary`, representando una colección de documentales. Esta implementa el método `print` de la clase abstracta especializado en documentales.
 
 ```typescript
 export class DocumentaryCollection extends BasicStreamableCollection<Documentary> {
@@ -703,7 +704,7 @@ describe("Documentary class tests", () => {
 
 #### Clase SerieCollection
 
-La clase `SerieCollection` hereda de la clase abstracta genérica `BasicStreamableCollection` y la implementa con el tipo `Serie`, representando una colección de series. Esta implementa el método`print` de la clase abstracta especializado en series.
+La clase `SerieCollection` hereda de la clase abstracta genérica `BasicStreamableCollection` y la implementa con el tipo `Serie`, representando una colección de series. Esta implementa el método `print` de la clase abstracta especializado en series.
 
 ```typescript
 export class SerieCollection extends BasicStreamableCollection<Serie> {
@@ -3102,6 +3103,272 @@ describe("MusicLibrary class tests", () => {
     );
     expect(music_library.getReproductions("El Polvorete")).to.be.equal(5000);
     expect(music_library.getReproductions("si")).to.be.equal(0);
+  });
+});
+```
+
+## Ejercicios PE 103
+
+### 1. Colecciones con búsqueda
+
+Este ejercicio trata de diseñar el modelado de datos para una colecciones genéricas que permitan la búsqueda de elementos.
+
+#### Interfaz genérica Searchable
+
+La interfaz genérica `Searchable` se utiliza para indicar que un objeto implementa una operación para buscar elementos de tipo *T* en base a un término de búsqueda de tipo *S*.
+
+```typescript
+export interface Searchable<T, S> {
+  search(search_term: S): T[];
+}
+```
+
+#### Interfaz genérica Collectable
+
+La interfaz genérica `Collectable` se utiliza para indicar que un objeto implementa las operaciones básicas para gestionar una colección de objetos de un tipo genérico T.
+
+```typescript
+export interface Collectable<T> {
+  addItem(item: T): void;
+
+  getItem(index: number): T | undefined;
+
+  removeItem(index: number): T | undefined;
+
+  getNumberOfItems(): number;
+}
+```
+
+#### Clase abstracta genérica SearchableCollection
+
+La clase abstracta `SearchableCollection` implementa las interfaces genéricas `Searchable` y `Collectable` y representa una colección en la que se pueden realizar búsquedas de elementos. Esta clase tiene una colección de elementos genéricos y define e implementa todos los métodos de la interfaz `Collectable`, dejando el método `search` de la interfaz `Searchable` como abstracto.
+
+```typescript
+export abstract class SearchableCollection<T, S>
+  implements Collectable<T>, Searchable<T, S>
+{
+  constructor(private _collection: T[]) {}
+
+  get collection(): T[] {
+    return this._collection;
+  }
+
+  public addItem(item: T): void {
+    this._collection.push(item);
+  }
+
+  public getItem(index: number): T | undefined {
+    if (index < 0 || index >= this.getNumberOfItems() || index % 1 !== 0) {
+      return undefined;
+    }
+    return this._collection[index];
+  }
+
+  public removeItem(index: number): T | undefined {
+    if (index < 0 || index >= this.getNumberOfItems() || index % 1 !== 0) {
+      return undefined;
+    }
+    return this._collection.splice(index, 1)[0];
+  }
+
+  public getNumberOfItems(): number {
+    return this._collection.length;
+  }
+
+  abstract search(search_term: S): T[];
+}
+```
+
+A continuación se decriben los métodos implementados en la clase:
+
+ * `addItem` añade un elemento a la colección.
+ * `getItem` devuelve un objeto de la colección según su índice. Devuelve *undefined* si el índice es inválido.
+ * `removeItem` devuelve un objeto de la colección según su índice y lo elimina. Devuelve *undefined* si el índice es inválido.
+ * `getNumberOfItems` devuelve el número de elementos de la colección.
+
+#### Clase NumericSearchableCollection
+
+La clase `NumericSearchableCollection` hereda de la clase abstracta genérica `SearchableCollection` y la implementa con el tipo `<number, number>`, representando una colección de números que utiliza números para el método de búsqueda. Esta implementa el método `search` de la clase abstracta especializado en números.
+
+```typescript
+export class NumericSearchableCollection extends SearchableCollection<
+  number,
+  number
+> {
+  constructor(collection: number[]) {
+    super(collection);
+  }
+
+  search(search_term: number): number[] {
+    const found_items: number[] = [];
+    for (let index = 0; index < this.getNumberOfItems(); index++) {
+      const element: number = this.getItem(index) as number;
+      if (element === search_term) {
+        found_items.push(element);
+      }
+    }
+    return found_items;
+  }
+}
+```
+
+A continuación se describirán los métodos implementados en la clase:
+
+ * `search` devuelve un array con todas las repeticiones en la colección del número buscado.
+ 
+Las pruebas para probar la clase son las siguientes:
+
+```typescript
+describe("NumericSearchableCollection class tests", () => {
+  const numeric_searchable_collection: NumericSearchableCollection =
+    new NumericSearchableCollection([]);
+
+  it("NumericSearchableCollection constructor", () => {
+    expect(numeric_searchable_collection).to.be.instanceof(
+      NumericSearchableCollection
+    );
+    expect(numeric_searchable_collection).to.be.instanceof(
+      SearchableCollection
+    );
+  });
+
+  it("Function addItem", () => {
+    expect(numeric_searchable_collection.collection).to.be.eql([]);
+    numeric_searchable_collection.addItem(1);
+    expect(numeric_searchable_collection.collection).to.be.eql([1]);
+    numeric_searchable_collection.addItem(1);
+    numeric_searchable_collection.addItem(2);
+    numeric_searchable_collection.addItem(1);
+    numeric_searchable_collection.addItem(3);
+    expect(numeric_searchable_collection.collection).to.be.eql([1, 1, 2, 1, 3]);
+  });
+
+  it("Function getItem", () => {
+    expect(numeric_searchable_collection.getItem(0)).to.be.equal(1);
+    expect(numeric_searchable_collection.getItem(2)).to.be.equal(2);
+    expect(numeric_searchable_collection.getItem(4)).to.be.equal(3);
+    expect(numeric_searchable_collection.getItem(5)).to.be.undefined;
+    expect(numeric_searchable_collection.getItem(-1)).to.be.undefined;
+    expect(numeric_searchable_collection.getItem(2.5)).to.be.undefined;
+  });
+
+  it("Function removeItem", () => {
+    expect(numeric_searchable_collection.removeItem(0)).to.be.equal(1);
+    expect(numeric_searchable_collection.removeItem(3)).to.be.equal(3);
+    expect(numeric_searchable_collection.removeItem(3)).to.be.undefined;
+    expect(numeric_searchable_collection.removeItem(-1)).to.be.undefined;
+    expect(numeric_searchable_collection.removeItem(2.5)).to.be.undefined;
+  });
+
+  it("Function getNumberOfItems", () => {
+    expect(numeric_searchable_collection.getNumberOfItems()).to.be.equal(3);
+    numeric_searchable_collection.addItem(1);
+    numeric_searchable_collection.addItem(3);
+    expect(numeric_searchable_collection.getNumberOfItems()).to.be.equal(5);
+  });
+
+  it("Function search", () => {
+    expect(numeric_searchable_collection.search(1)).to.be.eql([1, 1, 1]);
+    expect(numeric_searchable_collection.search(3)).to.be.eql([3]);
+    expect(numeric_searchable_collection.search(0)).to.be.eql([]);
+  });
+});
+```
+
+#### Clase StringSearchableCollection
+
+La clase `StringSearchableCollection` hereda de la clase abstracta genérica `SearchableCollection` y la implementa con el tipo `<string, string>`, representando una colección de cadenas que utiliza cadenas para el método de búsqueda. Esta implementa el método `search` de la clase abstracta especializado en cadenas.
+
+```typescript
+export class StringSearchableCollection extends SearchableCollection<
+  string,
+  string
+> {
+  constructor(collection: string[]) {
+    super(collection);
+  }
+
+  search(search_term: string): string[] {
+    const found_items: string[] = [];
+    for (let index = 0; index < this.getNumberOfItems(); index++) {
+      const element: string = this.getItem(index) as string;
+      if (element === search_term) {
+        found_items.push(element);
+      }
+    }
+    return found_items;
+  }
+}
+```
+
+A continuación se describirán los métodos implementados en la clase:
+
+ * `search` devuelve un array con todas las repeticiones en la colección de la cadena buscada.
+ 
+Las pruebas para probar la clase son las siguientes:
+
+```typescript
+describe("StringSearchableCollection class tests", () => {
+  const string_searchable_collection: StringSearchableCollection =
+    new StringSearchableCollection([]);
+
+  it("StringSearchableCollection constructor", () => {
+    expect(string_searchable_collection).to.be.instanceof(
+      StringSearchableCollection
+    );
+    expect(string_searchable_collection).to.be.instanceof(SearchableCollection);
+  });
+
+  it("Function addItem", () => {
+    expect(string_searchable_collection.collection).to.be.eql([]);
+    string_searchable_collection.addItem("hola");
+    expect(string_searchable_collection.collection).to.be.eql(["hola"]);
+    string_searchable_collection.addItem("queso");
+    string_searchable_collection.addItem("tarta");
+    string_searchable_collection.addItem("que");
+    string_searchable_collection.addItem("abierto");
+    expect(string_searchable_collection.collection).to.be.eql([
+      "hola",
+      "queso",
+      "tarta",
+      "que",
+      "abierto",
+    ]);
+  });
+
+  it("Function getItem", () => {
+    expect(string_searchable_collection.getItem(0)).to.be.equal("hola");
+    expect(string_searchable_collection.getItem(2)).to.be.equal("tarta");
+    expect(string_searchable_collection.getItem(4)).to.be.equal("abierto");
+    expect(string_searchable_collection.getItem(5)).to.be.undefined;
+    expect(string_searchable_collection.getItem(-1)).to.be.undefined;
+    expect(string_searchable_collection.getItem(2.5)).to.be.undefined;
+  });
+
+  it("Function removeItem", () => {
+    expect(string_searchable_collection.removeItem(0)).to.be.equal("hola");
+    expect(string_searchable_collection.removeItem(3)).to.be.equal("abierto");
+    expect(string_searchable_collection.removeItem(3)).to.be.undefined;
+    expect(string_searchable_collection.removeItem(-1)).to.be.undefined;
+    expect(string_searchable_collection.removeItem(2.5)).to.be.undefined;
+  });
+
+  it("Function getNumberOfItems", () => {
+    expect(string_searchable_collection.getNumberOfItems()).to.be.equal(3);
+    string_searchable_collection.addItem("cerrado");
+    string_searchable_collection.addItem("torta");
+    string_searchable_collection.addItem("hola");
+    string_searchable_collection.addItem("hola");
+    expect(string_searchable_collection.getNumberOfItems()).to.be.equal(7);
+  });
+
+  it("Function search", () => {
+    expect(string_searchable_collection.search("hola")).to.be.eql([
+      "hola",
+      "hola",
+    ]);
+    expect(string_searchable_collection.search("queso")).to.be.eql(["queso"]);
+    expect(string_searchable_collection.search("tortilla")).to.be.eql([]);
   });
 });
 ```
