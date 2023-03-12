@@ -1470,3 +1470,1638 @@ describe("MyList class tests", () => {
   });
 });
 ```
+
+### 3. Ampliando la biblioteca musical
+
+Este ejercicio trata de extender la biblioteca musical creada en la [práctica 5](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct05-objects-classes-interfaces-alu0101239187/). Para esto tenemos que añadir nuevas clases a la estructura de clases ya creada, añadiendo una nueva clase `Single` que defina los singles de la librería. Por tanto, se tratarán únicamente las clases que hayan sido modificadas debido a este cambio.
+
+#### Clase Single
+
+La nueva clase `Single` representa un single, por lo que tiene una única canción. Esta clase tiene atributos para guardar el nombre del single, el nombre del artista, el año de publicación, la canción y las versiones de esta. Todos sus atributos son privados para controlar lo que se muestra y modifica de la clase, como en el caso del año de publicación que solo puede ser un entero positivo.
+
+```typescript
+export class Single {
+  private _versions: string[];
+  
+  constructor(
+    private _name: string,
+    private _artist: string,
+    private _publication_year: number,
+    private _song: Song,
+    versions?: string[]
+  ) {
+    if (_publication_year % 1 !== 0 || _publication_year < 0) {
+      throw "El año de publicación debe ser un entero positivo.";
+    }
+    if (typeof versions === "undefined") {
+      this._versions = ["Original"];
+    } else {
+      this._versions = versions;
+    }
+  }
+
+  get name() {
+    return this._name;
+  }
+
+  set name(name: string) {
+    this._name = name;
+  }
+
+  get artist() {
+    return this._artist;
+  }
+
+  set artist(artist: string) {
+    this._artist = artist;
+  }
+
+  get publication_year() {
+    return this._publication_year;
+  }
+
+  set publication_year(publication_year: number) {
+    if (publication_year % 1 !== 0 || publication_year < 0) {
+      throw "El año de publicación debe ser un entero positivo.";
+    }
+    this._publication_year = publication_year;
+  }
+
+  get song() {
+    return this._song;
+  }
+
+  set song(song: Song) {
+    this._song = song;
+  }
+
+  get versions() {
+    return this._versions;
+  }
+
+  set versions(versions: string[]) {
+    this._versions = versions;
+  }
+}
+```
+
+Las pruebas para probar la clase son las siguientes:
+
+```typescript
+describe("Single class tests", () => {
+  const single1: Single = new Single(
+    "Partiendo la Pana",
+    "Estopa",
+    2002,
+    new Song(
+      "Partiendo la Pana",
+      "Partiendo la Pana",
+      150,
+      ["Rock español"],
+      200
+    ),
+    ["Original", "Acústico"]
+  );
+  const single2: Single = new Single(
+    "El Polvorete",
+    "Pepe Benavente",
+    2009,
+    new Song("El Polvorete", "El Polvorete", 230, ["Verbena"], 5000)
+  );
+
+  it("Single constructor", () => {
+    expect(single1).to.be.instanceof(Single);
+    expect(single2).to.be.instanceof(Single);
+    expect(
+      () =>
+        new Single(
+          "Master of Puppets",
+          "Metallica",
+          -1,
+          new Song(
+            "Master of Puppets",
+            "Master of Puppets",
+            500,
+            ["Rock", "Metal"],
+            1000
+          )
+        )
+    ).to.throw("El año de publicación debe ser un entero positivo.");
+    expect(
+      expect(
+        () =>
+          new Single(
+            "Master of Puppets",
+            "Metallica",
+            2.5,
+            new Song(
+              "Master of Puppets",
+              "Master of Puppets",
+              500,
+              ["Rock", "Metal"],
+              1000
+            )
+          )
+      ).to.throw("El año de publicación debe ser un entero positivo.")
+    );
+  });
+
+  it("Property name", () => {
+    expect(single1.name).to.be.equal("Partiendo la Pana");
+    expect(single2.name).to.be.equal("El Polvorete");
+    single1.name = "Graduation";
+    expect(single1.name).to.be.equal("Graduation");
+  });
+
+  it("Property artist", () => {
+    expect(single1.artist).to.be.equal("Estopa");
+    expect(single2.artist).to.be.equal("Pepe Benavente");
+    single1.artist = "Pink Floyd";
+    expect(single1.artist).to.be.equal("Pink Floyd");
+  });
+
+  it("Property publication year", () => {
+    expect(single1.publication_year).to.be.equal(2002);
+    expect(single2.publication_year).to.be.equal(2009);
+    single1.publication_year = 2001;
+    expect(single1.publication_year).to.be.equal(2001);
+    expect(() => (single2.publication_year = -1)).to.throw(
+      "El año de publicación debe ser un entero positivo."
+    );
+    expect(() => (single2.publication_year = 2000.5)).to.throw(
+      "El año de publicación debe ser un entero positivo."
+    );
+  });
+
+  it("Property song", () => {
+    expect(single1.song).to.be.eql(
+      new Song(
+        "Partiendo la Pana",
+        "Partiendo la Pana",
+        150,
+        ["Rock español"],
+        200
+      )
+    );
+    expect(single2.song).to.be.eql(
+      new Song("El Polvorete", "El Polvorete", 230, ["Verbena"], 5000)
+    );
+    single1.song = new Song(
+      "Enter Sandman",
+      single1.name,
+      350,
+      ["Metal"],
+      12000
+    );
+    expect(single1.song).to.be.eql(
+      new Song("Enter Sandman", single1.name, 350, ["Metal"], 12000)
+    );
+  });
+
+  it("Property versions", () => {
+    expect(single1.versions).to.be.eql(["Original", "Acústico"]);
+    expect(single2.versions).to.be.eql(["Original"]);
+    single1.versions = ["Remix"];
+    expect(single1.versions).to.be.eql(["Remix"]);
+  });
+});
+```
+
+#### Clase genérica Discography
+
+La clase genérica `Discography` representa la discografía de un artista y puede estar formada por discos, singles o ambos. Esta clase contiene un array genérico en el que almacenará los álbumes. Todos sus atributos son privados para que no se puedan modificar directamente los atributos de la clase.
+
+```typescript
+export class Discography<D extends Disc, S extends Single> {
+  private _elements: (D | S)[];
+
+  constructor(...elements: (D | S)[]) {
+    this._elements = elements;
+  }
+
+  get elements() {
+    return this._elements;
+  }
+
+  public add(element: D | S): boolean {
+    if (
+      this._elements.filter(function (d) {
+        return d.name === element.name;
+      }).length === 0
+    ) {
+      this._elements.push(element);
+      return true;
+    }
+    return false;
+  }
+
+  public get(index: number): D | S | undefined {
+    if (index < 0 || index >= this.length() || index % 1 !== 0) {
+      return undefined;
+    }
+    return this._elements[index];
+  }
+
+  public remove(index: number): D | S | undefined {
+    if (index < 0 || index >= this.length() || index % 1 !== 0) {
+      return undefined;
+    }
+    return this._elements.splice(index, 1)[0];
+  }
+
+  public length(): number {
+    return this._elements.length;
+  }
+}
+```
+
+Las pruebas para probar la clase son las siguientes:
+
+```typescript
+describe("Discography class tests", () => {
+  const discography: Discography<Disc, Single> = new Discography();
+
+  it("Discography constructor", () => {
+    expect(discography).to.be.instanceof(Discography<Disc, Single>);
+    expect(
+      new Discography(
+        new Disc("Graduation", "Kanye West", 2007, []),
+        new Single(
+          "Yeezus",
+          "Kanye West",
+          2013,
+          new Song("On Sight", "Yeezus", 120, ["Trap", "Hip hop"], 10000),
+          ["Original", "Remix"]
+        ),
+        new Disc("The Life of Pablo", "Kanye West", 2016, []),
+        new Disc("Donda", "Kanye West", 2021, [])
+      )
+    ).to.be.instanceof(Discography);
+  });
+
+  it("Function add", () => {
+    expect(discography.elements).to.be.eql([]);
+    expect(discography.add(new Disc("Graduation", "Kanye West", 2007, []))).to
+      .be.true;
+    expect(discography.elements).to.be.eql([
+      new Disc("Graduation", "Kanye West", 2007, []),
+    ]);
+    expect(
+      discography.add(
+        new Single(
+          "Yeezus",
+          "Kanye West",
+          2013,
+          new Song("On Sight", "Yeezus", 120, ["Trap", "Hip hop"], 10000),
+          ["Original", "Remix"]
+        )
+      )
+    ).to.be.true;
+    expect(discography.elements).to.be.eql([
+      new Disc("Graduation", "Kanye West", 2007, []),
+      new Single(
+        "Yeezus",
+        "Kanye West",
+        2013,
+        new Song("On Sight", "Yeezus", 120, ["Trap", "Hip hop"], 10000),
+        ["Original", "Remix"]
+      ),
+    ]);
+    expect(discography.add(new Disc("Graduation", "Kanye West", 2007, []))).to
+      .be.false;
+  });
+
+  it("Function get", () => {
+    expect(discography.get(0)).to.be.eql(
+      new Disc("Graduation", "Kanye West", 2007, [])
+    );
+    expect(discography.get(1)).to.be.eql(
+      new Single(
+        "Yeezus",
+        "Kanye West",
+        2013,
+        new Song("On Sight", "Yeezus", 120, ["Trap", "Hip hop"], 10000),
+        ["Original", "Remix"]
+      )
+    );
+    expect(discography.get(5)).to.be.undefined;
+    expect(discography.get(-1)).to.be.undefined;
+    expect(discography.get(2.5)).to.be.undefined;
+  });
+
+  it("Function remove", () => {
+    expect(discography.remove(1)).to.be.eql(
+      new Single(
+        "Yeezus",
+        "Kanye West",
+        2013,
+        new Song("On Sight", "Yeezus", 120, ["Trap", "Hip hop"], 10000),
+        ["Original", "Remix"]
+      )
+    );
+    expect(discography.elements).to.be.eql([
+      new Disc("Graduation", "Kanye West", 2007, []),
+    ]);
+    expect(discography.remove(0)).to.be.eql(
+      new Disc("Graduation", "Kanye West", 2007, [])
+    );
+    expect(discography.elements).to.be.eql([]);
+    expect(discography.remove(3)).to.be.undefined;
+    expect(discography.remove(-1)).to.be.undefined;
+    expect(discography.remove(2.5)).to.be.undefined;
+  });
+
+  it("Function length", () => {
+    expect(discography.length()).to.be.equal(0);
+    discography.add(new Disc("Graduation", "Kanye West", 2007, []));
+    discography.add(
+      new Single(
+        "Yeezus",
+        "Kanye West",
+        2013,
+        new Song("On Sight", "Yeezus", 120, ["Trap", "Hip hop"], 10000),
+        ["Original", "Remix"]
+      )
+    );
+    expect(discography.length()).to.be.equal(2);
+  });
+});
+```
+
+#### Clase Artist
+
+La clase `Artist` ha sido modificada, sustituyendo el arrays de discos que tenía previamente por la nueva clase `Discography` para almacenar la discografía del artista.
+
+```typescript
+export class Artist {
+  constructor(
+    private _name: string,
+    private _monthly_listeners: number,
+    private _discography: Discography<Disc, Single>
+  ) {
+    if (_monthly_listeners % 1 !== 0 || _monthly_listeners < 0) {
+      throw "El número de oyentes mensuales debe ser un entero positivo.";
+    }
+  }
+
+  get name() {
+    return this._name;
+  }
+
+  set name(name: string) {
+    this._name = name;
+  }
+
+  get monthly_listeners() {
+    return this._monthly_listeners;
+  }
+
+  set monthly_listeners(monthly_listeners: number) {
+    if (monthly_listeners % 1 !== 0 || monthly_listeners < 0) {
+      throw "El número de oyentes mensuales debe ser un entero positivo.";
+    }
+    this._monthly_listeners = monthly_listeners;
+  }
+
+  get discography() {
+    return this._discography;
+  }
+
+  set discography(discography: Discography<Disc, Single>) {
+    this._discography = discography;
+  }
+}
+```
+
+Las pruebas para probar la clase son las siguientes:
+
+```typescript
+describe("Artist class tests", () => {
+  const discography: Discography<Disc, Single> = new Discography(
+    new Disc("Graduation", "Kanye West", 2007, []),
+    new Disc("Yeezus", "Kanye West", 2013, []),
+    new Disc("The Life of Pablo", "Kanye West", 2016, []),
+    new Disc("Donda", "Kanye West", 2021, [])
+  );
+  const artist1: Artist = new Artist("Kanye West", 500, discography);
+  const artist2: Artist = new Artist("Estopa", 50000, new Discography());
+
+  it("Artist constructor", () => {
+    expect(artist1).to.be.instanceof(Artist);
+    expect(artist2).to.be.instanceof(Artist);
+    expect(() => new Artist("Estopa", -1, new Discography())).to.throw(
+      "El número de oyentes mensuales debe ser un entero positivo."
+    );
+    expect(() => new Artist("Estopa", 2.5, new Discography())).to.throw(
+      "El número de oyentes mensuales debe ser un entero positivo."
+    );
+  });
+
+  it("Property name", () => {
+    expect(artist1.name).to.be.equal("Kanye West");
+    expect(artist2.name).to.be.equal("Estopa");
+    artist1.name = "Pedro";
+    expect(artist1.name).to.be.equal("Pedro");
+  });
+
+  it("Property monthly listeners", () => {
+    expect(artist1.monthly_listeners).to.be.equal(500);
+    expect(artist2.monthly_listeners).to.be.equal(50000);
+    artist1.monthly_listeners = 2000;
+    expect(artist1.monthly_listeners).to.be.equal(2000);
+    expect(() => (artist2.monthly_listeners = -1)).to.throw(
+      "El número de oyentes mensuales debe ser un entero positivo."
+    );
+    expect(() => (artist2.monthly_listeners = 2.5)).to.throw(
+      "El número de oyentes mensuales debe ser un entero positivo."
+    );
+  });
+
+  it("Property discography", () => {
+    expect(artist1.discography).to.be.eql(
+      new Discography(
+        new Disc("Graduation", "Kanye West", 2007, []),
+        new Disc("Yeezus", "Kanye West", 2013, []),
+        new Disc("The Life of Pablo", "Kanye West", 2016, []),
+        new Disc("Donda", "Kanye West", 2021, [])
+      )
+    );
+    expect(artist2.discography).to.be.eql(new Discography());
+    artist1.discography = new Discography(
+      new Disc("The Dark Side of the Moon", artist1.name, 1973, [])
+    );
+    expect(artist1.discography).to.be.eql(
+      new Discography(
+        new Disc("The Dark Side of the Moon", artist1.name, 1973, [])
+      )
+    );
+  });
+});
+```
+
+#### Clase Solist
+
+La clase `Solist` ha sido modificada para permitir aplicar la herencia respecto a la clase `Artist`.
+
+```typescript
+export class Solist extends Artist {
+  constructor(
+    _name: string,
+    _monthly_listeners: number,
+    _discography: Discography<Disc, Single>,
+    private _voice_type: VoiceTypes
+  ) {
+    super(_name, _monthly_listeners, _discography);
+  }
+
+  get voice_type() {
+    return this._voice_type;
+  }
+
+  set voice_type(voice_type: VoiceTypes) {
+    this._voice_type = voice_type;
+  }
+}
+```
+
+Las pruebas para probar la clase son las siguientes:
+
+```typescript
+describe("Solist class tests", () => {
+  const discography: Discography<Disc, Single> = new Discography(
+    new Disc("Graduation", "Kanye West", 2007, []),
+    new Disc("Yeezus", "Kanye West", 2013, []),
+    new Disc("The Life of Pablo", "Kanye West", 2016, []),
+    new Disc("Donda", "Kanye West", 2021, [])
+  );
+  const artist1: Solist = new Solist(
+    "Kanye West",
+    500,
+    discography,
+    VoiceTypes.COUNTERTENOR
+  );
+  const artist2: Solist = new Solist(
+    "Pepe Benavente",
+    200000,
+    new Discography(),
+    VoiceTypes.TENOR
+  );
+
+  it("Solist constructor", () => {
+    expect(artist1).to.be.instanceof(Solist);
+    expect(artist1).to.be.instanceof(Artist);
+    expect(artist2).to.be.instanceof(Solist);
+    expect(artist1).to.be.instanceof(Artist);
+  });
+
+  it("Property voice_type", () => {
+    expect(artist1.voice_type).to.be.equal(VoiceTypes.COUNTERTENOR);
+    expect(artist2.voice_type).to.be.equal(VoiceTypes.TENOR);
+    artist1.voice_type = VoiceTypes.BASS;
+    expect(artist1.voice_type).to.be.equal(VoiceTypes.BASS);
+  });
+});
+```
+
+#### Clase Group
+
+La clase `Group` ha sido modificada para permitir aplicar la herencia respecto a la clase `Artist`.
+
+```typescript
+export class Group extends Artist {
+  constructor(
+    _name: string,
+    _monthly_listeners: number,
+    _discography: Discography<Disc, Single>,
+    private _number_of_members: number
+  ) {
+    if (_number_of_members % 1 !== 0 || _number_of_members < 0) {
+      throw "El número de miembros debe ser un entero positivo.";
+    }
+    super(_name, _monthly_listeners, _discography);
+  }
+
+  get number_of_members() {
+    return this._number_of_members;
+  }
+
+  set number_of_members(number_of_members: number) {
+    if (number_of_members % 1 !== 0 || number_of_members < 0) {
+      throw "El número de miembros debe ser un entero positivo.";
+    }
+    this._number_of_members = number_of_members;
+  }
+}
+```
+
+Las pruebas para probar la clase son las siguientes:
+
+```typescript
+describe("Group class tests", () => {
+  const discography: Discography<Disc, Single> = new Discography(
+    new Disc("Master of Puppets", "Metallica", 1986, []),
+    new Disc("Metallica", "Metallica", 1991, []),
+    new Disc("Death Magnetic", "Metallica", 2008, [])
+  );
+  const group1: Group = new Group("Metallica", 10, discography, 4);
+  const group2: Group = new Group("Estopa", 50000, new Discography(), 2);
+
+  it("Group constructor", () => {
+    expect(group1).to.be.instanceof(Group);
+    expect(group1).to.be.instanceof(Artist);
+    expect(group2).to.be.instanceof(Group);
+    expect(group1).to.be.instanceof(Artist);
+    expect(() => new Group("Estopa", 50000, new Discography(), -1)).to.throw(
+      "El número de miembros debe ser un entero positivo."
+    );
+    expect(() => new Group("Estopa", 50000, new Discography(), 2.5)).to.throw(
+      "El número de miembros debe ser un entero positivo."
+    );
+  });
+
+  it("Property number of members", () => {
+    expect(group1.number_of_members).to.be.equal(4);
+    expect(group2.number_of_members).to.be.equal(2);
+    group1.number_of_members = 10;
+    expect(group1.number_of_members).to.be.equal(10);
+    expect(() => (group2.number_of_members = -1)).to.throw(
+      "El número de miembros debe ser un entero positivo."
+    );
+    expect(() => (group2.number_of_members = 2.5)).to.throw(
+      "El número de miembros debe ser un entero positivo."
+    );
+  });
+});
+```
+
+#### Clase MusicLibrary
+
+La siguiente clase a tratar es la clase `MusicLibrary`, cuyos métodos han sido modificados para poder funcionar con la nueva clase `Discography` y tanto con la clase `Single` como con la clase `Disc`.
+
+```typescript
+export class MusicLibrary {
+  constructor(private _artists: Artist[]) {}
+
+  get artists() {
+    return this._artists;
+  }
+
+  public addArtist(artist: Artist): void {
+    this.artists.push(artist);
+  }
+
+  public addAlbum(artist_name: string, album: Disc | Single): void {
+    this.artists.forEach(function (artist) {
+      if (artist.name === artist_name) {
+        artist.discography.add(album);
+      }
+    });
+  }
+
+  public addSong(artist_name: string, album_name: string, song: Song): void {
+    this.artists.forEach(function (artist) {
+      if (artist.name === artist_name) {
+        for (let index = 0; index < artist.discography.length(); index++) {
+          const element = artist.discography.get(index);
+          if (element instanceof Disc) {
+            if (element.name === album_name) {
+              element.songs.push(song);
+            }
+          } else if (element instanceof Single) {
+            if (element.name === album_name) {
+              element.song = song;
+            }
+          }
+        }
+      }
+    });
+  }
+
+  public showArtists(): Artist[] {
+    console.table(this.artists);
+    return this.artists;
+  }
+
+  public showAlbums(): (Disc | Single | undefined)[] {
+    const elements: (Disc | Single | undefined)[] = [];
+    this.artists.forEach(function (artist) {
+      for (let index = 0; index < artist.discography.length(); index++) {
+        elements.push(artist.discography.get(index));
+      }
+    });
+    console.table(elements);
+    return elements;
+  }
+
+  public showSongs(): Song[] {
+    const songs: Song[] | undefined = [];
+    this.artists.forEach(function (artist) {
+      for (let index = 0; index < artist.discography.length(); index++) {
+        const element = artist.discography.get(index);
+        if (element instanceof Disc) {
+          element.songs.forEach((song) => songs.push(song));
+        } else if (typeof element !== "undefined") {
+          songs.push(element.song);
+        }
+      }
+    });
+    console.table(songs);
+    return songs;
+  }
+
+  public searchArtists(artist_search: string): Artist[] {
+    const result: Artist[] = this.artists.filter(function (artist) {
+      return artist.name.toUpperCase().startsWith(artist_search.toUpperCase());
+    });
+    console.table(result);
+    return result;
+  }
+
+  public searchAlbums(album_search: string): (Disc | Single | undefined)[] {
+    const result: (Disc | Single | undefined)[] = [];
+    this.artists.forEach(function (artist) {
+      for (let index = 0; index < artist.discography.length(); index++) {
+        const element = artist.discography.get(index);
+        if (typeof element !== "undefined") {
+          if (
+            element.name.toUpperCase().startsWith(album_search.toUpperCase())
+          ) {
+            result.push(element);
+          }
+        }
+      }
+    });
+    console.table(result);
+    return result;
+  }
+
+  public searchSongs(song_search: string): Song[] {
+    const result: Song[] | undefined = [];
+    this.artists.forEach(function (artist) {
+      for (let index = 0; index < artist.discography.length(); index++) {
+        const element = artist.discography.get(index);
+        if (element instanceof Disc) {
+          element.songs.forEach(function (song) {
+            if (song.name.toUpperCase().startsWith(song_search.toUpperCase())) {
+              result.push(song);
+            }
+          });
+        } else if (typeof element !== "undefined") {
+          if (
+            element.song.name
+              .toUpperCase()
+              .startsWith(song_search.toUpperCase())
+          ) {
+            result.push(element.song);
+          }
+        }
+      }
+    });
+    console.table(result);
+    return result;
+  }
+
+  public countSongs(disc_search: string): number {
+    const elements: (Disc | Single | undefined)[] =
+      this.searchAlbums(disc_search);
+    if (elements.length === 0) {
+      return 0;
+    }
+    if (elements[0] instanceof Disc) {
+      return elements[0].songs.length;
+    } else {
+      return 1;
+    }
+  }
+
+  public getDuration(disc_search: string): number {
+    const elements: (Disc | Single | undefined)[] =
+      this.searchAlbums(disc_search);
+    let duration = 0;
+    if (elements[0] instanceof Disc) {
+      elements[0].songs.forEach((song) => (duration += song.duration));
+    } else if (typeof elements[0] !== "undefined") {
+      duration = elements[0].song.duration;
+    }
+    return duration;
+  }
+
+  public getReproductions(disc_search: string): number {
+    const elements: (Disc | Single | undefined)[] =
+      this.searchAlbums(disc_search);
+    let reproductions = 0;
+    if (elements[0] instanceof Disc) {
+      elements[0].songs.forEach(
+        (song) => (reproductions += song.reproductions_number)
+      );
+    } else if (typeof elements[0] !== "undefined") {
+      reproductions = elements[0].song.reproductions_number;
+    }
+    return reproductions;
+  }
+}
+```
+
+Las pruebas para probar la clase son las siguientes:
+
+```typescript
+describe("MusicLibrary class tests", () => {
+  it("Music library constructor", () => {
+    expect(new MusicLibrary([])).to.be.instanceof(MusicLibrary);
+    expect(
+      new MusicLibrary([
+        new Group("Estopa", 50000, new Discography(), 2),
+        new Solist(
+          "Pepe Benavente",
+          200000,
+          new Discography(),
+          VoiceTypes.TENOR
+        ),
+      ])
+    ).to.be.instanceof(MusicLibrary);
+  });
+
+  it("Function addArtist", () => {
+    const music_library: MusicLibrary = new MusicLibrary([]);
+    music_library.addArtist(new Group("Estopa", 50000, new Discography(), 2));
+    expect(music_library.artists[0]).to.be.eql(
+      new Group("Estopa", 50000, new Discography(), 2)
+    );
+    music_library.addArtist(
+      new Solist("Pepe Benavente", 200000, new Discography(), VoiceTypes.TENOR)
+    );
+    expect(music_library.artists[1]).to.be.eql(
+      new Solist("Pepe Benavente", 200000, new Discography(), VoiceTypes.TENOR)
+    );
+  });
+
+  it("Function addDisc", () => {
+    const music_library: MusicLibrary = new MusicLibrary([
+      new Group("Estopa", 50000, new Discography(), 2),
+      new Solist("Pepe Benavente", 200000, new Discography(), VoiceTypes.TENOR),
+    ]);
+    music_library.addAlbum(
+      "Estopa",
+      new Disc("Destrangis", "Estopa", 2001, [])
+    );
+    expect(music_library.artists[0]).to.be.eql(
+      new Group(
+        "Estopa",
+        50000,
+        new Discography(new Disc("Destrangis", "Estopa", 2001, [])),
+        2
+      )
+    );
+    expect(music_library.artists[0].discography.get(0)).to.be.eql(
+      new Disc("Destrangis", "Estopa", 2001, [])
+    );
+    music_library.addAlbum(
+      "Pepe Benavente",
+      new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [])
+    );
+    expect(music_library.artists[1]).to.be.eql(
+      new Solist(
+        "Pepe Benavente",
+        200000,
+        new Discography(new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [])),
+        VoiceTypes.TENOR
+      )
+    );
+    expect(music_library.artists[1].discography.get(0)).to.be.eql(
+      new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [])
+    );
+  });
+
+  it("Function addSong", () => {
+    const music_library: MusicLibrary = new MusicLibrary([
+      new Group(
+        "Estopa",
+        50000,
+        new Discography(new Disc("Destrangis", "Estopa", 2001, [])),
+        2
+      ),
+      new Solist(
+        "Pepe Benavente",
+        200000,
+        new Discography(
+          new Disc("Grandes Éxitos", "Pepe Benavente", 2009, []),
+          new Single(
+            "El Polvorete",
+            "Pepe Benavente",
+            2009,
+            new Song("El Polvorete", "El Polvorete", 230, ["Verbena"], 5000)
+          )
+        ),
+        VoiceTypes.TENOR
+      ),
+    ]);
+    music_library.addSong(
+      "Estopa",
+      "Destrangis",
+      new Song("Vino Tinto", "Destrangis", 199, ["Pop", "Rock español"], 50000)
+    );
+    expect(music_library.artists[0]).to.be.eql(
+      new Group(
+        "Estopa",
+        50000,
+        new Discography(
+          new Disc("Destrangis", "Estopa", 2001, [
+            new Song(
+              "Vino Tinto",
+              "Destrangis",
+              199,
+              ["Pop", "Rock español"],
+              50000
+            ),
+          ])
+        ),
+        2
+      )
+    );
+    expect(music_library.artists[0].discography.get(0)).to.be.eql(
+      new Disc("Destrangis", "Estopa", 2001, [
+        new Song(
+          "Vino Tinto",
+          "Destrangis",
+          199,
+          ["Pop", "Rock español"],
+          50000
+        ),
+      ])
+    );
+    music_library.addSong(
+      "Pepe Benavente",
+      "Grandes Éxitos",
+      new Song("El Polvorete", "Grandes Éxitos", 217, ["Verbena"], 200000)
+    );
+    expect(music_library.artists[1]).to.be.eql(
+      new Solist(
+        "Pepe Benavente",
+        200000,
+        new Discography(
+          new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+            new Song(
+              "El Polvorete",
+              "Grandes Éxitos",
+              217,
+              ["Verbena"],
+              200000
+            ),
+          ]),
+          new Single(
+            "El Polvorete",
+            "Pepe Benavente",
+            2009,
+            new Song("El Polvorete", "El Polvorete", 230, ["Verbena"], 5000)
+          )
+        ),
+        VoiceTypes.TENOR
+      )
+    );
+    music_library.addSong(
+      "Pepe Benavente",
+      "El Polvorete",
+      new Song("Tarta", "El Polvorete", 217, ["Verbena"], 200000)
+    );
+    expect(music_library.artists[1]).to.be.eql(
+      new Solist(
+        "Pepe Benavente",
+        200000,
+        new Discography(
+          new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+            new Song(
+              "El Polvorete",
+              "Grandes Éxitos",
+              217,
+              ["Verbena"],
+              200000
+            ),
+          ]),
+          new Single(
+            "El Polvorete",
+            "Pepe Benavente",
+            2009,
+            new Song("Tarta", "El Polvorete", 217, ["Verbena"], 200000)
+          )
+        ),
+        VoiceTypes.TENOR
+      )
+    );
+    expect(music_library.artists[1].discography.get(0)).to.be.eql(
+      new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+        new Song("El Polvorete", "Grandes Éxitos", 217, ["Verbena"], 200000),
+      ])
+    );
+    music_library.addSong(
+      "Metallica",
+      "Grandes Éxitos",
+      new Song("El Polvorete", "Grandes Éxitos", 217, ["Verbena"], 200000)
+    );
+    expect(music_library.artists).to.be.eql([
+      new Group(
+        "Estopa",
+        50000,
+        new Discography(
+          new Disc("Destrangis", "Estopa", 2001, [
+            new Song(
+              "Vino Tinto",
+              "Destrangis",
+              199,
+              ["Pop", "Rock español"],
+              50000
+            ),
+          ])
+        ),
+        2
+      ),
+      new Solist(
+        "Pepe Benavente",
+        200000,
+        new Discography(
+          new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+            new Song(
+              "El Polvorete",
+              "Grandes Éxitos",
+              217,
+              ["Verbena"],
+              200000
+            ),
+          ]),
+          new Single(
+            "El Polvorete",
+            "Pepe Benavente",
+            2009,
+            new Song("Tarta", "El Polvorete", 217, ["Verbena"], 200000)
+          )
+        ),
+        VoiceTypes.TENOR
+      ),
+    ]);
+    music_library.addSong(
+      "Pepe Benavente",
+      "Si",
+      new Song("El Polvorete", "Grandes Éxitos", 217, ["Verbena"], 200000)
+    );
+    expect(music_library.artists).to.be.eql([
+      new Group(
+        "Estopa",
+        50000,
+        new Discography(
+          new Disc("Destrangis", "Estopa", 2001, [
+            new Song(
+              "Vino Tinto",
+              "Destrangis",
+              199,
+              ["Pop", "Rock español"],
+              50000
+            ),
+          ])
+        ),
+        2
+      ),
+      new Solist(
+        "Pepe Benavente",
+        200000,
+        new Discography(
+          new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+            new Song(
+              "El Polvorete",
+              "Grandes Éxitos",
+              217,
+              ["Verbena"],
+              200000
+            ),
+          ]),
+          new Single(
+            "El Polvorete",
+            "Pepe Benavente",
+            2009,
+            new Song("Tarta", "El Polvorete", 217, ["Verbena"], 200000)
+          )
+        ),
+        VoiceTypes.TENOR
+      ),
+    ]);
+  });
+
+  it("Function showArtists", () => {
+    const music_library: MusicLibrary = new MusicLibrary([
+      new Group(
+        "Estopa",
+        50000,
+        new Discography(
+          new Disc("Destrangis", "Estopa", 2001, [
+            new Song(
+              "Vino Tinto",
+              "Destrangis",
+              199,
+              ["Pop", "Rock español"],
+              50000
+            ),
+          ])
+        ),
+        2
+      ),
+      new Solist(
+        "Pepe Benavente",
+        200000,
+        new Discography(
+          new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+            new Song(
+              "El Polvorete",
+              "Grandes Éxitos",
+              217,
+              ["Verbena"],
+              200000
+            ),
+          ])
+        ),
+        VoiceTypes.TENOR
+      ),
+    ]);
+    expect(music_library.showArtists()).to.be.eql([
+      new Group(
+        "Estopa",
+        50000,
+        new Discography(
+          new Disc("Destrangis", "Estopa", 2001, [
+            new Song(
+              "Vino Tinto",
+              "Destrangis",
+              199,
+              ["Pop", "Rock español"],
+              50000
+            ),
+          ])
+        ),
+        2
+      ),
+      new Solist(
+        "Pepe Benavente",
+        200000,
+        new Discography(
+          new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+            new Song(
+              "El Polvorete",
+              "Grandes Éxitos",
+              217,
+              ["Verbena"],
+              200000
+            ),
+          ])
+        ),
+        VoiceTypes.TENOR
+      ),
+    ]);
+  });
+
+  it("Function showDiscs", () => {
+    const music_library: MusicLibrary = new MusicLibrary([
+      new Group(
+        "Estopa",
+        50000,
+        new Discography(
+          new Disc("Destrangis", "Estopa", 2001, [
+            new Song(
+              "Vino Tinto",
+              "Destrangis",
+              199,
+              ["Pop", "Rock español"],
+              50000
+            ),
+          ])
+        ),
+        2
+      ),
+      new Solist(
+        "Pepe Benavente",
+        200000,
+        new Discography(
+          new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+            new Song(
+              "El Polvorete",
+              "Grandes Éxitos",
+              217,
+              ["Verbena"],
+              200000
+            ),
+          ])
+        ),
+        VoiceTypes.TENOR
+      ),
+    ]);
+    expect(music_library.showAlbums()).to.be.eql([
+      new Disc("Destrangis", "Estopa", 2001, [
+        new Song(
+          "Vino Tinto",
+          "Destrangis",
+          199,
+          ["Pop", "Rock español"],
+          50000
+        ),
+      ]),
+      new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+        new Song("El Polvorete", "Grandes Éxitos", 217, ["Verbena"], 200000),
+      ]),
+    ]);
+  });
+
+  it("Function showSongs", () => {
+    const music_library: MusicLibrary = new MusicLibrary([
+      new Group(
+        "Estopa",
+        50000,
+        new Discography(
+          new Disc("Destrangis", "Estopa", 2001, [
+            new Song(
+              "Vino Tinto",
+              "Destrangis",
+              199,
+              ["Pop", "Rock español"],
+              50000
+            ),
+          ])
+        ),
+        2
+      ),
+      new Solist(
+        "Pepe Benavente",
+        200000,
+        new Discography(
+          new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+            new Song(
+              "El Polvorete",
+              "Grandes Éxitos",
+              217,
+              ["Verbena"],
+              200000
+            ),
+          ]),
+          new Single(
+            "El Polvorete",
+            "Pepe Benavente",
+            2009,
+            new Song("Tarta", "El Polvorete", 217, ["Verbena"], 200000)
+          )
+        ),
+        VoiceTypes.TENOR
+      ),
+    ]);
+    expect(music_library.showSongs()).to.be.eql([
+      new Song("Vino Tinto", "Destrangis", 199, ["Pop", "Rock español"], 50000),
+      new Song("El Polvorete", "Grandes Éxitos", 217, ["Verbena"], 200000),
+      new Song("Tarta", "El Polvorete", 217, ["Verbena"], 200000),
+    ]);
+  });
+
+  it("Function searchArtists", () => {
+    const music_library: MusicLibrary = new MusicLibrary([
+      new Group(
+        "Estopa",
+        50000,
+        new Discography(
+          new Disc("Destrangis", "Estopa", 2001, [
+            new Song(
+              "Vino Tinto",
+              "Destrangis",
+              199,
+              ["Pop", "Rock español"],
+              50000
+            ),
+          ])
+        ),
+        2
+      ),
+      new Solist(
+        "Pepe Benavente",
+        200000,
+        new Discography(
+          new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+            new Song(
+              "El Polvorete",
+              "Grandes Éxitos",
+              217,
+              ["Verbena"],
+              200000
+            ),
+          ])
+        ),
+        VoiceTypes.TENOR
+      ),
+    ]);
+    expect(music_library.searchArtists("Estopa")).to.be.eql([
+      new Group(
+        "Estopa",
+        50000,
+        new Discography(
+          new Disc("Destrangis", "Estopa", 2001, [
+            new Song(
+              "Vino Tinto",
+              "Destrangis",
+              199,
+              ["Pop", "Rock español"],
+              50000
+            ),
+          ])
+        ),
+        2
+      ),
+    ]);
+    expect(music_library.searchArtists("Pepe Benavente")).to.be.eql([
+      new Solist(
+        "Pepe Benavente",
+        200000,
+        new Discography(
+          new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+            new Song(
+              "El Polvorete",
+              "Grandes Éxitos",
+              217,
+              ["Verbena"],
+              200000
+            ),
+          ])
+        ),
+        VoiceTypes.TENOR
+      ),
+    ]);
+    expect(music_library.searchArtists("estopa")).to.be.eql([
+      new Group(
+        "Estopa",
+        50000,
+        new Discography(
+          new Disc("Destrangis", "Estopa", 2001, [
+            new Song(
+              "Vino Tinto",
+              "Destrangis",
+              199,
+              ["Pop", "Rock español"],
+              50000
+            ),
+          ])
+        ),
+        2
+      ),
+    ]);
+    expect(music_library.searchArtists("Pepe")).to.be.eql([
+      new Solist(
+        "Pepe Benavente",
+        200000,
+        new Discography(
+          new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+            new Song(
+              "El Polvorete",
+              "Grandes Éxitos",
+              217,
+              ["Verbena"],
+              200000
+            ),
+          ])
+        ),
+        VoiceTypes.TENOR
+      ),
+    ]);
+    expect(music_library.searchArtists("si")).to.be.eql([]);
+  });
+
+  it("Function searchDiscs", () => {
+    const music_library: MusicLibrary = new MusicLibrary([
+      new Group(
+        "Estopa",
+        50000,
+        new Discography(
+          new Disc("Destrangis", "Estopa", 2001, [
+            new Song(
+              "Vino Tinto",
+              "Destrangis",
+              199,
+              ["Pop", "Rock español"],
+              50000
+            ),
+          ])
+        ),
+        2
+      ),
+      new Solist(
+        "Pepe Benavente",
+        200000,
+        new Discography(
+          new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+            new Song(
+              "El Polvorete",
+              "Grandes Éxitos",
+              217,
+              ["Verbena"],
+              200000
+            ),
+          ])
+        ),
+        VoiceTypes.TENOR
+      ),
+    ]);
+    expect(music_library.searchAlbums("Destrangis")).to.be.eql([
+      new Disc("Destrangis", "Estopa", 2001, [
+        new Song(
+          "Vino Tinto",
+          "Destrangis",
+          199,
+          ["Pop", "Rock español"],
+          50000
+        ),
+      ]),
+    ]);
+    expect(music_library.searchAlbums("Grandes Éxitos")).to.be.eql([
+      new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+        new Song("El Polvorete", "Grandes Éxitos", 217, ["Verbena"], 200000),
+      ]),
+    ]);
+    expect(music_library.searchAlbums("destrangis")).to.be.eql([
+      new Disc("Destrangis", "Estopa", 2001, [
+        new Song(
+          "Vino Tinto",
+          "Destrangis",
+          199,
+          ["Pop", "Rock español"],
+          50000
+        ),
+      ]),
+    ]);
+    expect(music_library.searchAlbums("grandes")).to.be.eql([
+      new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+        new Song("El Polvorete", "Grandes Éxitos", 217, ["Verbena"], 200000),
+      ]),
+    ]);
+    expect(music_library.searchAlbums("si")).to.be.eql([]);
+  });
+
+  it("Function searchSongs", () => {
+    const music_library: MusicLibrary = new MusicLibrary([
+      new Group(
+        "Estopa",
+        50000,
+        new Discography(
+          new Disc("Destrangis", "Estopa", 2001, [
+            new Song(
+              "Vino Tinto",
+              "Destrangis",
+              199,
+              ["Pop", "Rock español"],
+              50000
+            ),
+          ])
+        ),
+        2
+      ),
+      new Solist(
+        "Pepe Benavente",
+        200000,
+        new Discography(
+          new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+            new Song(
+              "El Polvorete",
+              "Grandes Éxitos",
+              217,
+              ["Verbena"],
+              200000
+            ),
+            new Song(
+              "El de Prueba",
+              "Grandes Éxitos",
+              217,
+              ["Verbena"],
+              200000
+            ),
+          ]),
+          new Single(
+            "El Polvorete",
+            "Pepe Benavente",
+            2009,
+            new Song("El Polvorete", "El Polvorete", 230, ["Verbena"], 5000)
+          )
+        ),
+        VoiceTypes.TENOR
+      ),
+    ]);
+    expect(music_library.searchSongs("Vino Tinto")).to.be.eql([
+      new Song("Vino Tinto", "Destrangis", 199, ["Pop", "Rock español"], 50000),
+    ]);
+    expect(music_library.searchSongs("El Polvorete")).to.be.eql([
+      new Song("El Polvorete", "Grandes Éxitos", 217, ["Verbena"], 200000),
+      new Song("El Polvorete", "El Polvorete", 230, ["Verbena"], 5000),
+    ]);
+    expect(music_library.searchSongs("vino")).to.be.eql([
+      new Song("Vino Tinto", "Destrangis", 199, ["Pop", "Rock español"], 50000),
+    ]);
+    expect(music_library.searchSongs("el")).to.be.eql([
+      new Song("El Polvorete", "Grandes Éxitos", 217, ["Verbena"], 200000),
+      new Song("El de Prueba", "Grandes Éxitos", 217, ["Verbena"], 200000),
+      new Song("El Polvorete", "El Polvorete", 230, ["Verbena"], 5000),
+    ]);
+    expect(music_library.searchSongs("si")).to.be.eql([]);
+  });
+
+  it("Function countSongs", () => {
+    const music_library: MusicLibrary = new MusicLibrary([
+      new Group(
+        "Estopa",
+        50000,
+        new Discography(
+          new Disc("Destrangis", "Estopa", 2001, [
+            new Song(
+              "Vino Tinto",
+              "Destrangis",
+              199,
+              ["Pop", "Rock español"],
+              50000
+            ),
+          ])
+        ),
+        2
+      ),
+      new Solist(
+        "Pepe Benavente",
+        200000,
+        new Discography(
+          new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+            new Song(
+              "El Polvorete",
+              "Grandes Éxitos",
+              217,
+              ["Verbena"],
+              200000
+            ),
+            new Song(
+              "El de Prueba",
+              "Grandes Éxitos",
+              217,
+              ["Verbena"],
+              200000
+            ),
+          ]),
+          new Single(
+            "El Polvorete",
+            "Pepe Benavente",
+            2009,
+            new Song("El Polvorete", "El Polvorete", 230, ["Verbena"], 5000)
+          )
+        ),
+        VoiceTypes.TENOR
+      ),
+    ]);
+    expect(music_library.countSongs("Destrangis")).to.be.equal(1);
+    expect(music_library.countSongs("Grandes Éxitos")).to.be.equal(2);
+    expect(music_library.countSongs("El Polvorete")).to.be.equal(1);
+    expect(music_library.countSongs("si")).to.be.equal(0);
+  });
+
+  it("Function getDuration", () => {
+    const music_library: MusicLibrary = new MusicLibrary([
+      new Group(
+        "Estopa",
+        50000,
+        new Discography(
+          new Disc("Destrangis", "Estopa", 2001, [
+            new Song(
+              "Vino Tinto",
+              "Destrangis",
+              199,
+              ["Pop", "Rock español"],
+              50000
+            ),
+          ])
+        ),
+        2
+      ),
+      new Solist(
+        "Pepe Benavente",
+        200000,
+        new Discography(
+          new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+            new Song(
+              "El Polvorete",
+              "Grandes Éxitos",
+              217,
+              ["Verbena"],
+              200000
+            ),
+            new Song(
+              "El de Prueba",
+              "Grandes Éxitos",
+              222,
+              ["Verbena"],
+              200000
+            ),
+          ]),
+          new Single(
+            "El Polvorete",
+            "Pepe Benavente",
+            2009,
+            new Song("El Polvorete", "El Polvorete", 230, ["Verbena"], 5000)
+          )
+        ),
+        VoiceTypes.TENOR
+      ),
+    ]);
+    expect(music_library.getDuration("Destrangis")).to.be.equal(199);
+    expect(music_library.getDuration("Grandes Éxitos")).to.be.equal(439);
+    expect(music_library.getDuration("El Polvorete")).to.be.equal(230);
+    expect(music_library.getDuration("si")).to.be.equal(0);
+  });
+
+  it("Function getReproductions", () => {
+    const music_library: MusicLibrary = new MusicLibrary([
+      new Group(
+        "Estopa",
+        50000,
+        new Discography(
+          new Disc("Destrangis", "Estopa", 2001, [
+            new Song(
+              "Vino Tinto",
+              "Destrangis",
+              199,
+              ["Pop", "Rock español"],
+              50000
+            ),
+          ])
+        ),
+        2
+      ),
+      new Solist(
+        "Pepe Benavente",
+        200000,
+        new Discography(
+          new Disc("Grandes Éxitos", "Pepe Benavente", 2009, [
+            new Song(
+              "El Polvorete",
+              "Grandes Éxitos",
+              217,
+              ["Verbena"],
+              200000
+            ),
+            new Song(
+              "El de Prueba",
+              "Grandes Éxitos",
+              222,
+              ["Verbena"],
+              200001
+            ),
+          ]),
+          new Single(
+            "El Polvorete",
+            "Pepe Benavente",
+            2009,
+            new Song("El Polvorete", "El Polvorete", 230, ["Verbena"], 5000)
+          )
+        ),
+        VoiceTypes.TENOR
+      ),
+    ]);
+    expect(music_library.getReproductions("Destrangis")).to.be.equal(50000);
+    expect(music_library.getReproductions("Grandes Éxitos")).to.be.equal(
+      400001
+    );
+    expect(music_library.getReproductions("El Polvorete")).to.be.equal(5000);
+    expect(music_library.getReproductions("si")).to.be.equal(0);
+  });
+});
+```
