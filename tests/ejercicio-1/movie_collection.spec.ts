@@ -73,15 +73,11 @@ describe("MovieCollection class tests", () => {
     expect(movie_collection.remove(2.5)).to.be.undefined;
   });
 
-  it("Function getNumberOfItems", () => {
-    expect(movie_collection.getNumberOfItems()).to.be.equal(0);
-    expect(
-      movie_collection.add(new Movie("Avatar", "James Cameron", 137, 2009))
-    ).to.be.true;
-    expect(
-      movie_collection.add(new Movie("Titanic", "James Cameron", 118, 1997))
-    ).to.be.true;
-    expect(movie_collection.getNumberOfItems()).to.be.equal(2);
+  it("Function length", () => {
+    expect(movie_collection.length()).to.be.equal(0);
+    movie_collection.add(new Movie("Avatar", "James Cameron", 137, 2009));
+    movie_collection.add(new Movie("Titanic", "James Cameron", 118, 1997));
+    expect(movie_collection.length()).to.be.equal(2);
   });
 
   it("Function searchByName", () => {

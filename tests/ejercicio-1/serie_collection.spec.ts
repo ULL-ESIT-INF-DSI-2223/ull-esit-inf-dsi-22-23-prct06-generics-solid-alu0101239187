@@ -70,13 +70,11 @@ describe("SerieCollection class tests", () => {
     expect(serie_collection.remove(2.5)).to.be.undefined;
   });
 
-  it("Function getNumberOfItems", () => {
-    expect(serie_collection.getNumberOfItems()).to.be.equal(0);
-    expect(serie_collection.add(new Serie("The Last of Us", 1, 9, 2023))).to.be
-      .true;
-    expect(serie_collection.add(new Serie("Friends", 10, 236, 1994))).to.be
-      .true;
-    expect(serie_collection.getNumberOfItems()).to.be.equal(2);
+  it("Function length", () => {
+    expect(serie_collection.length()).to.be.equal(0);
+    serie_collection.add(new Serie("The Last of Us", 1, 9, 2023));
+    serie_collection.add(new Serie("Friends", 10, 236, 1994));
+    expect(serie_collection.length()).to.be.equal(2);
   });
 
   it("Function searchByName", () => {

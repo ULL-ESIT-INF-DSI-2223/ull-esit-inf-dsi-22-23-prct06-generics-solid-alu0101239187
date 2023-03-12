@@ -82,19 +82,15 @@ describe("DocumentaryCollection class tests", () => {
     expect(documentary_collection.remove(2.5)).to.be.undefined;
   });
 
-  it("Function getNumberOfItems", () => {
-    expect(documentary_collection.getNumberOfItems()).to.be.equal(0);
-    expect(
-      documentary_collection.add(
-        new Documentary("Ballenas", "Biología Marina", 125, 2020)
-      )
-    ).to.be.true;
-    expect(
-      documentary_collection.add(
-        new Documentary("Egipto", "Historia", 114, 2010)
-      )
-    ).to.be.true;
-    expect(documentary_collection.getNumberOfItems()).to.be.equal(2);
+  it("Function length", () => {
+    expect(documentary_collection.length()).to.be.equal(0);
+    documentary_collection.add(
+      new Documentary("Ballenas", "Biología Marina", 125, 2020)
+    );
+    documentary_collection.add(
+      new Documentary("Egipto", "Historia", 114, 2010)
+    );
+    expect(documentary_collection.length()).to.be.equal(2);
   });
 
   it("Function searchByName", () => {

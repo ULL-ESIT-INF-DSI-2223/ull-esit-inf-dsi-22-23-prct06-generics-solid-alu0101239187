@@ -20,5 +20,5 @@ export interface Collectable<T> {
   /**
    * Returns the number of items of a collection
    */
-  getNumberOfItems(): number;
+  length(): number;
 }

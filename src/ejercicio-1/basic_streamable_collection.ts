@@ -41,7 +41,7 @@ export abstract class BasicStreamableCollection<
    * @returns The item if the index is correct, undefined otherwise
    */
   public get(index: number): T | undefined {
-    if (index < 0 || index >= this.getNumberOfItems() || index % 1 !== 0) {
+    if (index < 0 || index >= this.length() || index % 1 !== 0) {
       return undefined;
     }
     return this._collection[index];
@@ -53,7 +53,7 @@ export abstract class BasicStreamableCollection<
    * @returns The item removed if the operation was succesful, undefined otherwised
    */
   public remove(index: number): T | undefined {
-    if (index < 0 || index >= this.getNumberOfItems() || index % 1 !== 0) {
+    if (index < 0 || index >= this.length() || index % 1 !== 0) {
       return undefined;
     }
     return this._collection.splice(index, 1)[0];
@@ -63,7 +63,7 @@ export abstract class BasicStreamableCollection<
    * Returns the number of items of a collection
    * @returns The number of items of the collection
    */
-  public getNumberOfItems(): number {
+  public length(): number {
     return this._collection.length;
   }
 

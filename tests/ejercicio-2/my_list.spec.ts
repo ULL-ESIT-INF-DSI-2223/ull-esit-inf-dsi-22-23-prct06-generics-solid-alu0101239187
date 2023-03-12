@@ -12,7 +12,6 @@ describe("MyList class tests", () => {
 
   it("Property elements", () => {
     expect(new MyList().elements).to.be.eql([]);
-    expect(new MyList().elements).to.be.eql([]);
     expect(new MyList(1, 2, 3).elements).to.be.eql([1, 2, 3]);
     expect(new MyList("hola", "adios", "si", "no").elements).to.be.eql([
       "hola",
