@@ -10,6 +10,7 @@
 - [Ejercicios](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct05-objects-classes-interfaces-alu0101239187/#ejercicios)
 - [Ejercicios PE 103](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct05-objects-classes-interfaces-alu0101239187/#ejercicios-pe-103)
 - [Conclusión](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct05-objects-classes-interfaces-alu0101239187/#conclusión)
+- [Bibliografía](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct05-objects-classes-interfaces-alu0101239187/#bibliografía)
 
 ## Introducción
 
@@ -3376,4 +3377,12 @@ describe("StringSearchableCollection class tests", () => {
 
 ## Conclusión
 
-Con los tres ejercicios que han sido realizados, hemos logrado aprender acerca de la creación de clases e interfaces genéricas en TypeScript y profundizar en la aplicación de los principios SOLID, lo que mejora nuestro código notoriamente.
+Con los tres ejercicios que han sido realizados, hemos logrado aprender acerca de la creación de clases e interfaces genéricas en TypeScript y profundizar en la aplicación de los principios SOLID, lo que mejora nuestro código notoriamente. Además, hemos aprendido a utilizar Istanbul y Coveralls para comprobar el grado de cubrimiento de nuestro código y tener un punto de referencia objetivo en lugar de uno subjetivo.
+
+## Bibliografía
+
+ * [Desarrollo de Sistemas Informáticos - Práctica 6 - Clases e interfaces genéricas. Principios SOLID](https://ull-esit-inf-dsi-2223.github.io/prct06-generics-solid/)
+ * [Desarrollo de Sistemas Informáticos - Clases e interfaces genéricas](https://ull-esit-inf-dsi-2223.github.io/typescript-theory/typescript-generics.html)
+ * [Desarrollo de Sistemas Informáticos - Principios SOLID](https://ull-esit-inf-dsi-2223.github.io/typescript-theory/typescript-solid.html)
+ * [Istanbul](https://istanbul.js.org)
+ * [Coveralls](https://coveralls.io)
