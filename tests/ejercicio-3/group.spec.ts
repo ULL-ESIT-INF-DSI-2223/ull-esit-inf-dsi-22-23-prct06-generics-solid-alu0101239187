@@ -7,7 +7,7 @@ import { Discography } from "../../src/ejercicio-3/discography";
 import { Single } from "../../src/ejercicio-3/single";
 
 describe("Group class tests", () => {
-  const discography: Discography<Disc, Single>  = new Discography(
+  const discography: Discography<Disc, Single> = new Discography(
     new Disc("Master of Puppets", "Metallica", 1986, []),
     new Disc("Metallica", "Metallica", 1991, []),
     new Disc("Death Magnetic", "Metallica", 2008, [])

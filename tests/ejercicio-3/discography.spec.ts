@@ -13,7 +13,13 @@ describe("Discography class tests", () => {
     expect(
       new Discography(
         new Disc("Graduation", "Kanye West", 2007, []),
-        new Single("Yeezus", "Kanye West", 2013, new Song("On Sight", "Yeezus", 120, ["Trap", "Hip hop"], 10000), ["Original", "Remix"]),
+        new Single(
+          "Yeezus",
+          "Kanye West",
+          2013,
+          new Song("On Sight", "Yeezus", 120, ["Trap", "Hip hop"], 10000),
+          ["Original", "Remix"]
+        ),
         new Disc("The Life of Pablo", "Kanye West", 2016, []),
         new Disc("Donda", "Kanye West", 2021, [])
       )
@@ -27,11 +33,26 @@ describe("Discography class tests", () => {
     expect(discography.elements).to.be.eql([
       new Disc("Graduation", "Kanye West", 2007, []),
     ]);
-    expect(discography.add(new Single("Yeezus", "Kanye West", 2013, new Song("On Sight", "Yeezus", 120, ["Trap", "Hip hop"], 10000), ["Original", "Remix"]))).to.be
-      .true;
+    expect(
+      discography.add(
+        new Single(
+          "Yeezus",
+          "Kanye West",
+          2013,
+          new Song("On Sight", "Yeezus", 120, ["Trap", "Hip hop"], 10000),
+          ["Original", "Remix"]
+        )
+      )
+    ).to.be.true;
     expect(discography.elements).to.be.eql([
       new Disc("Graduation", "Kanye West", 2007, []),
-      new Single("Yeezus", "Kanye West", 2013, new Song("On Sight", "Yeezus", 120, ["Trap", "Hip hop"], 10000), ["Original", "Remix"])
+      new Single(
+        "Yeezus",
+        "Kanye West",
+        2013,
+        new Song("On Sight", "Yeezus", 120, ["Trap", "Hip hop"], 10000),
+        ["Original", "Remix"]
+      ),
     ]);
     expect(discography.add(new Disc("Graduation", "Kanye West", 2007, []))).to
       .be.false;
@@ -42,7 +63,13 @@ describe("Discography class tests", () => {
       new Disc("Graduation", "Kanye West", 2007, [])
     );
     expect(discography.get(1)).to.be.eql(
-      new Single("Yeezus", "Kanye West", 2013, new Song("On Sight", "Yeezus", 120, ["Trap", "Hip hop"], 10000), ["Original", "Remix"])
+      new Single(
+        "Yeezus",
+        "Kanye West",
+        2013,
+        new Song("On Sight", "Yeezus", 120, ["Trap", "Hip hop"], 10000),
+        ["Original", "Remix"]
+      )
     );
     expect(discography.get(5)).to.be.undefined;
     expect(discography.get(-1)).to.be.undefined;
@@ -51,7 +78,13 @@ describe("Discography class tests", () => {
 
   it("Function remove", () => {
     expect(discography.remove(1)).to.be.eql(
-      new Single("Yeezus", "Kanye West", 2013, new Song("On Sight", "Yeezus", 120, ["Trap", "Hip hop"], 10000), ["Original", "Remix"])
+      new Single(
+        "Yeezus",
+        "Kanye West",
+        2013,
+        new Song("On Sight", "Yeezus", 120, ["Trap", "Hip hop"], 10000),
+        ["Original", "Remix"]
+      )
     );
     expect(discography.elements).to.be.eql([
       new Disc("Graduation", "Kanye West", 2007, []),
@@ -68,7 +101,15 @@ describe("Discography class tests", () => {
   it("Function length", () => {
     expect(discography.length()).to.be.equal(0);
     discography.add(new Disc("Graduation", "Kanye West", 2007, []));
-    discography.add(new Single("Yeezus", "Kanye West", 2013, new Song("On Sight", "Yeezus", 120, ["Trap", "Hip hop"], 10000), ["Original", "Remix"]));
+    discography.add(
+      new Single(
+        "Yeezus",
+        "Kanye West",
+        2013,
+        new Song("On Sight", "Yeezus", 120, ["Trap", "Hip hop"], 10000),
+        ["Original", "Remix"]
+      )
+    );
     expect(discography.length()).to.be.equal(2);
   });
 });

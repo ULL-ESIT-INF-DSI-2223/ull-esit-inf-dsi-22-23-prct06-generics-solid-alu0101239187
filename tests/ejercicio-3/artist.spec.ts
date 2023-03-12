@@ -6,7 +6,7 @@ import { Discography } from "../../src/ejercicio-3/discography";
 import { Single } from "../../src/ejercicio-3/single";
 
 describe("Artist class tests", () => {
-  const discography: Discography<Disc, Single>  = new Discography(
+  const discography: Discography<Disc, Single> = new Discography(
     new Disc("Graduation", "Kanye West", 2007, []),
     new Disc("Yeezus", "Kanye West", 2013, []),
     new Disc("The Life of Pablo", "Kanye West", 2016, []),

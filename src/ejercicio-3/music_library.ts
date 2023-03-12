@@ -242,7 +242,8 @@ export class MusicLibrary {
    * ```
    */
   public getDuration(disc_search: string): number {
-    const elements: (Disc | Single | undefined)[] = this.searchAlbums(disc_search);
+    const elements: (Disc | Single | undefined)[] =
+      this.searchAlbums(disc_search);
     let duration = 0;
     if (elements[0] instanceof Disc) {
       elements[0].songs.forEach((song) => (duration += song.duration));
@@ -262,10 +263,13 @@ export class MusicLibrary {
    * ```
    */
   public getReproductions(disc_search: string): number {
-    const elements: (Disc | Single | undefined)[] = this.searchAlbums(disc_search);
+    const elements: (Disc | Single | undefined)[] =
+      this.searchAlbums(disc_search);
     let reproductions = 0;
     if (elements[0] instanceof Disc) {
-      elements[0].songs.forEach((song) => (reproductions += song.reproductions_number));
+      elements[0].songs.forEach(
+        (song) => (reproductions += song.reproductions_number)
+      );
     } else if (typeof elements[0] !== "undefined") {
       reproductions = elements[0].song.reproductions_number;
     }

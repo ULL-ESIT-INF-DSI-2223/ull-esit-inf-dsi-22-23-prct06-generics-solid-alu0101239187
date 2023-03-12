@@ -43,7 +43,10 @@ describe("MusicLibrary class tests", () => {
       new Group("Estopa", 50000, new Discography(), 2),
       new Solist("Pepe Benavente", 200000, new Discography(), VoiceTypes.TENOR),
     ]);
-    music_library.addAlbum("Estopa", new Disc("Destrangis", "Estopa", 2001, []));
+    music_library.addAlbum(
+      "Estopa",
+      new Disc("Destrangis", "Estopa", 2001, [])
+    );
     expect(music_library.artists[0]).to.be.eql(
       new Group(
         "Estopa",
@@ -83,14 +86,17 @@ describe("MusicLibrary class tests", () => {
       new Solist(
         "Pepe Benavente",
         200000,
-        new Discography(new Disc("Grandes Éxitos", "Pepe Benavente", 2009, []), new Single(
-          "El Polvorete",
-          "Pepe Benavente",
-          2009,
-          new Song("El Polvorete", "El Polvorete", 230, ["Verbena"], 5000)
-        )),
+        new Discography(
+          new Disc("Grandes Éxitos", "Pepe Benavente", 2009, []),
+          new Single(
+            "El Polvorete",
+            "Pepe Benavente",
+            2009,
+            new Song("El Polvorete", "El Polvorete", 230, ["Verbena"], 5000)
+          )
+        ),
         VoiceTypes.TENOR
-      )
+      ),
     ]);
     music_library.addSong(
       "Estopa",
@@ -144,7 +150,8 @@ describe("MusicLibrary class tests", () => {
               ["Verbena"],
               200000
             ),
-          ]), new Single(
+          ]),
+          new Single(
             "El Polvorete",
             "Pepe Benavente",
             2009,
@@ -172,7 +179,8 @@ describe("MusicLibrary class tests", () => {
               ["Verbena"],
               200000
             ),
-          ]), new Single(
+          ]),
+          new Single(
             "El Polvorete",
             "Pepe Benavente",
             2009,
@@ -221,7 +229,8 @@ describe("MusicLibrary class tests", () => {
               ["Verbena"],
               200000
             ),
-          ]),  new Single(
+          ]),
+          new Single(
             "El Polvorete",
             "Pepe Benavente",
             2009,
@@ -265,7 +274,8 @@ describe("MusicLibrary class tests", () => {
               ["Verbena"],
               200000
             ),
-          ]),  new Single(
+          ]),
+          new Single(
             "El Polvorete",
             "Pepe Benavente",
             2009,
@@ -429,7 +439,8 @@ describe("MusicLibrary class tests", () => {
               ["Verbena"],
               200000
             ),
-          ]),  new Single(
+          ]),
+          new Single(
             "El Polvorete",
             "Pepe Benavente",
             2009,
@@ -442,7 +453,7 @@ describe("MusicLibrary class tests", () => {
     expect(music_library.showSongs()).to.be.eql([
       new Song("Vino Tinto", "Destrangis", 199, ["Pop", "Rock español"], 50000),
       new Song("El Polvorete", "Grandes Éxitos", 217, ["Verbena"], 200000),
-      new Song("Tarta", "El Polvorete", 217, ["Verbena"], 200000)
+      new Song("Tarta", "El Polvorete", 217, ["Verbena"], 200000),
     ]);
   });
 
@@ -663,7 +674,8 @@ describe("MusicLibrary class tests", () => {
               ["Verbena"],
               200000
             ),
-          ]),  new Single(
+          ]),
+          new Single(
             "El Polvorete",
             "Pepe Benavente",
             2009,
@@ -677,8 +689,8 @@ describe("MusicLibrary class tests", () => {
       new Song("Vino Tinto", "Destrangis", 199, ["Pop", "Rock español"], 50000),
     ]);
     expect(music_library.searchSongs("El Polvorete")).to.be.eql([
-      new Song("El Polvorete", "Grandes Éxitos", 217, ["Verbena"], 200000), 
-      new Song("El Polvorete", "El Polvorete", 230, ["Verbena"], 5000)
+      new Song("El Polvorete", "Grandes Éxitos", 217, ["Verbena"], 200000),
+      new Song("El Polvorete", "El Polvorete", 230, ["Verbena"], 5000),
     ]);
     expect(music_library.searchSongs("vino")).to.be.eql([
       new Song("Vino Tinto", "Destrangis", 199, ["Pop", "Rock español"], 50000),
@@ -686,7 +698,7 @@ describe("MusicLibrary class tests", () => {
     expect(music_library.searchSongs("el")).to.be.eql([
       new Song("El Polvorete", "Grandes Éxitos", 217, ["Verbena"], 200000),
       new Song("El de Prueba", "Grandes Éxitos", 217, ["Verbena"], 200000),
-      new Song("El Polvorete", "El Polvorete", 230, ["Verbena"], 5000)
+      new Song("El Polvorete", "El Polvorete", 230, ["Verbena"], 5000),
     ]);
     expect(music_library.searchSongs("si")).to.be.eql([]);
   });
@@ -728,7 +740,8 @@ describe("MusicLibrary class tests", () => {
               ["Verbena"],
               200000
             ),
-          ]), new Single(
+          ]),
+          new Single(
             "El Polvorete",
             "Pepe Benavente",
             2009,
@@ -781,7 +794,8 @@ describe("MusicLibrary class tests", () => {
               ["Verbena"],
               200000
             ),
-          ]), new Single(
+          ]),
+          new Single(
             "El Polvorete",
             "Pepe Benavente",
             2009,
@@ -834,7 +848,8 @@ describe("MusicLibrary class tests", () => {
               ["Verbena"],
               200001
             ),
-          ]), new Single(
+          ]),
+          new Single(
             "El Polvorete",
             "Pepe Benavente",
             2009,
@@ -848,9 +863,7 @@ describe("MusicLibrary class tests", () => {
     expect(music_library.getReproductions("Grandes Éxitos")).to.be.equal(
       400001
     );
-    expect(music_library.getReproductions("El Polvorete")).to.be.equal(
-      5000
-    );
+    expect(music_library.getReproductions("El Polvorete")).to.be.equal(5000);
     expect(music_library.getReproductions("si")).to.be.equal(0);
   });
 });
