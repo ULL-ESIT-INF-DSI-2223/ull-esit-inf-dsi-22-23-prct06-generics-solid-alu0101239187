@@ -6,11 +6,11 @@
 
 ## Índice
 
-- [Introducción](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct05-objects-classes-interfaces-alu0101239187/#introducción)
-- [Ejercicios](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct05-objects-classes-interfaces-alu0101239187/#ejercicios)
-- [Ejercicios PE 103](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct05-objects-classes-interfaces-alu0101239187/#ejercicios-pe-103)
-- [Conclusión](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct05-objects-classes-interfaces-alu0101239187/#conclusión)
-- [Bibliografía](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct05-objects-classes-interfaces-alu0101239187/#bibliografía)
+- [Introducción](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct06-generics-solid-alu0101239187/#introducción)
+- [Ejercicios](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct06-generics-solid-alu0101239187/#ejercicios)
+- [Ejercicios PE 103](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct06-generics-solid-alu0101239187/#ejercicios-pe-103)
+- [Conclusión](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct06-generics-solid-alu0101239187/#conclusión)
+- [Bibliografía](https://ull-esit-inf-dsi-2223.github.io/ull-esit-inf-dsi-22-23-prct06-generics-solid-alu0101239187/#bibliografía)
 
 ## Introducción
 
